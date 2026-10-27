@@ -195,22 +195,42 @@ const canciones = [];
   const add = c => { if (canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
   const show = q => {
     const manual = {titulo: q, artista: 'Escrita a mano', arte: null, manual: true};
-    list.innerHTML = items.map((c,i) => `<li role="option" data-i="${i}"><img src="${esc(c.arte)}" alt=""><div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
+    const aviso = items.length ? '' : `<li class="manual" style="cursor:default;color:var(--piedra)">No encontramos coincidencias; puedes guardarla tal cual:</li>`;
+    list.innerHTML = aviso + items.map((c,i) => `<li role="option" data-i="${i}"><img src="${esc(c.arte)}" alt=""><div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
     items.push(manual); list.hidden = false; sel = -1;
   };
   input.addEventListener('input', () => {
     const q = input.value.trim(); clearTimeout(timer); if (q.length < 2) { close(); return; }
     timer = setTimeout(async () => {
       lastQ = q;
-      try {
-        const r = await fetch(`https://itunes.apple.com/search?media=music&entity=song&limit=6&country=CR&term=${encodeURIComponent(q)}`);
-        const j = await r.json(); if (lastQ !== q) return;
-        items = (j.results || []).map(x => ({titulo: x.trackName, artista: x.artistName, arte: (x.artworkUrl100 || '').replace('100x100','200x200'), id: x.trackId}));
-      } catch { items = []; }
+      items = await buscarCanciones(q);
+      if (lastQ !== q) return;
       show(q);
-    }, 260);
+    }, 350);
   });
-  list.addEventListener('mousedown', e => { const li = e.target.closest('li'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); });
+  // Buscador 1: Apple Music (fetch). Buscador 2: Deezer (JSONP), por si una red bloquea al primero.
+  const jsonp = (url) => new Promise((res, rej) => {
+    const cb = 'cb' + Math.random().toString(36).slice(2); const s = document.createElement('script');
+    const t = setTimeout(() => { cleanup(); rej(new Error('timeout')); }, 6000);
+    function cleanup(){ clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = d => { cleanup(); res(d); };
+    s.onerror = () => { cleanup(); rej(new Error('script')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb; document.head.appendChild(s);
+  });
+  async function buscarCanciones(q){
+    try {
+      const r = await fetch(`https://itunes.apple.com/search?media=music&entity=song&limit=6&country=CR&term=${encodeURIComponent(q)}`);
+      if (!r.ok) throw new Error('itunes ' + r.status);
+      const j = await r.json();
+      if (j.results && j.results.length) return j.results.map(x => ({titulo: x.trackName, artista: x.artistName, arte: (x.artworkUrl100 || '').replace('100x100','200x200')}));
+    } catch (e) { console.warn('Apple Music no respondió', e.message); }
+    try {
+      const j = await jsonp(`https://api.deezer.com/search?limit=6&output=jsonp&q=${encodeURIComponent(q)}`);
+      if (j.data && j.data.length) return j.data.map(x => ({titulo: x.title, artista: x.artist && x.artist.name, arte: x.album && x.album.cover_medium}));
+    } catch (e) { console.warn('Deezer no respondió', e.message); }
+    return [];
+  }
+  list.addEventListener('mousedown', e => { const li = e.target.closest('li[role=option]'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); });
   input.addEventListener('keydown', e => {
     if (list.hidden) return; const lis = [...list.children];
     if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(sel+1, lis.length-1); } else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(sel-1, 0); }
@@ -218,7 +238,8 @@ const canciones = [];
     else if (e.key === 'Escape') { close(); return; } else return;
     lis.forEach((l,i) => l.setAttribute('aria-selected', i === sel));
   });
-  input.addEventListener('blur', () => setTimeout(close, 150));
+  list.addEventListener('touchstart', e => { const li = e.target.closest('li[role=option]'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); }, {passive:false});
+  input.addEventListener('blur', () => setTimeout(close, 250));
   picked.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; canciones.splice(+b.dataset.i, 1); paint(); });
   document.addEventListener('rsvp:restore', e => { canciones.splice(0, canciones.length, ...(e.detail || [])); paint(); });
 })();
