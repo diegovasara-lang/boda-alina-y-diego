@@ -33,13 +33,17 @@ function load(){
     $('sPend').textContent = rows.filter(r => r.respuesta === 'pendiente').length;
     const respondieron = new Set(rows.map(r => r.clave).filter(Boolean));
     $('sSin').textContent = Object.keys(INV).filter(k => !respondieron.has(k)).length;
-    $('rsvpBody').innerHTML = rows.map(r => `<tr><td>${esc(r.nombre)}<br><span class="muted">${esc(r.clave || 'sin enlace')}</span></td><td><span class="tag ${esc(r.respuesta)}">${{si:'Sí',no:'No',pendiente:'Pendiente'}[r.respuesta] || r.respuesta}</span>${r.fechaConfirma ? `<br><span class="muted">confirma el ${esc(r.fechaConfirma)}</span>` : ''}</td><td>${(r.personas||[]).map(esc).join('<br>')}</td><td>${esc(r.mensaje || '')}</td><td class="muted">${new Date(r.ts).toLocaleString('es-CR')}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Aún no hay respuestas.</td></tr>';
+    $('rsvpBody').innerHTML = rows.map(r => `<tr><td>${esc(r.nombre)}<br><span class="muted">${esc(r.clave || 'sin enlace')}</span></td><td><span class="tag ${esc(r.respuesta)}">${{si:'Sí',no:'No',pendiente:'Pendiente'}[r.respuesta] || r.respuesta}</span>${r.fechaConfirma ? `<br><span class="muted">confirma el ${esc(r.fechaConfirma)}</span>` : ''}</td><td>${(r.personas||[]).map(esc).join('<br>')}</td><td>${(r.canciones||[]).map(c => esc(c.titulo) + (c.artista && c.artista !== 'Escrita a mano' ? '<br><span class="muted">' + esc(c.artista) + '</span>' : '')).join('<hr style="border:0;border-top:1px solid #e5ded0;margin:6px 0">')}</td><td>${esc(r.mensaje || '')}</td><td class="muted">${new Date(r.ts).toLocaleString('es-CR')}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Aún no hay respuestas.</td></tr>';
   });
   loadFotos(false);
   F.getCountFromServer(F.collection(db,'fotos')).then(s => $('sFotos').textContent = s.data().count).catch(()=>{});
 }
+$('songsBtn').onclick = () => {
+  const lines = rows.flatMap(r => (r.canciones||[]).map(c => `${c.titulo}${c.artista && c.artista !== 'Escrita a mano' ? ' - ' + c.artista : ''}  (${r.nombre})`));
+  navigator.clipboard.writeText(lines.join('\n')).then(() => $('songsBtn').textContent = 'Copiadas ' + lines.length);
+};
 $('csvBtn').onclick = () => {
-  const csv = [['invitacion','clave','respuesta','personas','fecha_confirma','mensaje','fecha'].join(','), ...rows.map(r => [r.nombre, r.clave||'', r.respuesta, (r.personas||[]).join(' | '), r.fechaConfirma||'', (r.mensaje||'').replace(/\n/g,' '), new Date(r.ts).toISOString()].map(x => '"' + String(x).replace(/"/g,'""') + '"').join(','))].join('\n');
+  const csv = [['invitacion','clave','respuesta','personas','fecha_confirma','canciones','mensaje','fecha'].join(','), ...rows.map(r => [r.nombre, r.clave||'', r.respuesta, (r.personas||[]).join(' | '), r.fechaConfirma||'', (r.canciones||[]).map(c=>c.titulo+' - '+c.artista).join(' | '), (r.mensaje||'').replace(/\n/g,' '), new Date(r.ts).toISOString()].map(x => '"' + String(x).replace(/"/g,'""') + '"').join(','))].join('\n');
   navigator.clipboard.writeText(csv).then(() => $('csvBtn').textContent = 'Copiado');
 };
 

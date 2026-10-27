@@ -23,7 +23,7 @@ $('igName').textContent = C.nombre; $('igPlace').textContent = C.lugar; $('igTim
 $('igMaps').href = C.maps; $('igWaze').href = C.waze;
 $('rcName').textContent = R.nombre; $('rcPlace').textContent = R.lugar; $('rcTime').textContent = R.hora; $('rcAddr').textContent = R.direccion;
 $('rcMaps').href = R.maps; $('rcWaze').href = R.waze;
-$('deadline').textContent = B.fechaLimite;
+$('deadline').textContent = B.fechaLimite; $('idxDeadline').textContent = B.fechaLimite;
 $('adultsNote').hidden = !B.soloAdultos;
 
 if (B.mostrarPrograma) {
@@ -185,6 +185,44 @@ async function initFirebase(){
 }
 const fbReady = initFirebase().then(x => fb = x);
 
+/* ---------- Canción que no puede faltar (buscador público de Apple Music, sin cuenta) ---------- */
+const canciones = [];
+(function(){
+  const input = $('songInput'), list = $('songList'), picked = $('songPicked');
+  let timer = 0, items = [], sel = -1, lastQ = '';
+  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
+  const close = () => { list.hidden = true; list.innerHTML = ''; items = []; sel = -1; };
+  const add = c => { if (canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
+  const show = q => {
+    const manual = {titulo: q, artista: 'Escrita a mano', arte: null, manual: true};
+    list.innerHTML = items.map((c,i) => `<li role="option" data-i="${i}"><img src="${esc(c.arte)}" alt=""><div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
+    items.push(manual); list.hidden = false; sel = -1;
+  };
+  input.addEventListener('input', () => {
+    const q = input.value.trim(); clearTimeout(timer); if (q.length < 2) { close(); return; }
+    timer = setTimeout(async () => {
+      lastQ = q;
+      try {
+        const r = await fetch(`https://itunes.apple.com/search?media=music&entity=song&limit=6&country=CR&term=${encodeURIComponent(q)}`);
+        const j = await r.json(); if (lastQ !== q) return;
+        items = (j.results || []).map(x => ({titulo: x.trackName, artista: x.artistName, arte: (x.artworkUrl100 || '').replace('100x100','200x200'), id: x.trackId}));
+      } catch { items = []; }
+      show(q);
+    }, 260);
+  });
+  list.addEventListener('mousedown', e => { const li = e.target.closest('li'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); });
+  input.addEventListener('keydown', e => {
+    if (list.hidden) return; const lis = [...list.children];
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(sel+1, lis.length-1); } else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(sel-1, 0); }
+    else if (e.key === 'Enter') { e.preventDefault(); const li = lis[sel] || lis[lis.length-1]; add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); return; }
+    else if (e.key === 'Escape') { close(); return; } else return;
+    lis.forEach((l,i) => l.setAttribute('aria-selected', i === sel));
+  });
+  input.addEventListener('blur', () => setTimeout(close, 150));
+  picked.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; canciones.splice(+b.dataset.i, 1); paint(); });
+  document.addEventListener('rsvp:restore', e => { canciones.splice(0, canciones.length, ...(e.detail || [])); paint(); });
+})();
+
 /* ---------- RSVP ---------- */
 const form = $('rsvpForm');
 const LS_KEY = 'rsvp:' + (clave || 'anon');
@@ -209,6 +247,9 @@ function showDone(data){
   const f = new Date(data.ts || Date.now()).toLocaleDateString('es-CR', {day:'numeric', month:'long', year:'numeric'});
   $('sentDate').textContent = 'Respuesta enviada el ' + f;
   $('calBox').hidden = data.respuesta !== 'si';
+  if (data.canciones) document.dispatchEvent(new CustomEvent('rsvp:restore', {detail: data.canciones}));
+  const s = (data.canciones || []).map(c => c.titulo + (c.artista && c.artista !== 'Escrita a mano' ? ' · ' + c.artista : '')).join('  ·  ');
+  $('doneSongs').textContent = s ? 'Tu canción: ' + s : ''; $('doneSongs').hidden = !s;
 }
 // Si ya respondió desde otro teléfono, recuperar su respuesta de la base de datos
 fbReady.then(async () => { if (!fb || !clave) return; try { const snap = await fb.fs.getDoc(fb.fs.doc(fb.db, 'rsvp', clave)); if (snap.exists()) { const d = snap.data(); try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch {} showDone(d); } } catch (e) { /* lectura no permitida para invitados: se usa la copia local */ } });
@@ -224,7 +265,7 @@ form.addEventListener('submit', async e => {
   if (!r) { err.textContent = 'Elige una de las tres opciones.'; err.hidden = false; return; }
   const personas = r === 'si' ? (invitado ? [...form.querySelectorAll('input[name=persona]:checked')].map(i => i.value) : [nombre]) : [];
   if (r === 'si' && invitado && invitado.personas.length > 1 && !personas.length) { err.textContent = 'Marca al menos una persona.'; err.hidden = false; return; }
-  const data = { clave: clave || null, nombre, respuesta: r, personas, fechaConfirma: r === 'pendiente' ? ($('rsvpWhen').value || null) : null, mensaje: $('rsvpMsg').value.trim().slice(0,500) || null, ts: Date.now(), ua: navigator.userAgent.slice(0,120) };
+  const data = { clave: clave || null, nombre, respuesta: r, personas, fechaConfirma: r === 'pendiente' ? ($('rsvpWhen').value || null) : null, mensaje: $('rsvpMsg').value.trim().slice(0,500) || null, canciones: canciones.map(c => ({titulo: String(c.titulo).slice(0,120), artista: String(c.artista).slice(0,120), arte: c.arte || null})), ts: Date.now(), ua: navigator.userAgent.slice(0,120) };
 
   const btn = $('sendBtn'); btn.disabled = true; btn.textContent = 'Enviando…';
   try {
