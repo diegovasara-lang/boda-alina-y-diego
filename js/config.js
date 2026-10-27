@@ -52,7 +52,7 @@ window.BODA = {
   sinpe: null,   // opcional: { numero: "0000-0000", titular: "Nombre" }
 
   fechaLimite: "20 de noviembre de 2026",
-  whatsappRespaldo: "50600000000",   // ← tu número con código de país; solo se ofrece si la base de datos falla
+  whatsappRespaldo: null,   // ← poner "506XXXXXXXX" (con código de país) para ofrecer WhatsApp si la base de datos falla
   soloAdultos: true,
 
   /* ---------- Firebase: pegar aquí la configuración del proyecto ----------

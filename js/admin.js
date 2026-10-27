@@ -52,7 +52,8 @@ async function loadFotos(more){
   const q = more && last ? F.query(F.collection(db,'fotos'), F.orderBy('ts','desc'), F.startAfter(last), F.limit(60)) : F.query(F.collection(db,'fotos'), F.orderBy('ts','desc'), F.limit(60));
   const snap = await F.getDocs(q); if (!more) $('fotos').innerHTML = '';
   snap.forEach(d => { const x = d.data(); const fig = document.createElement('figure');
-    fig.innerHTML = `<a href="${esc(x.url)}" target="_blank" rel="noopener"><img src="${esc(x.thumb || x.url)}" alt=""></a><figcaption>${esc(x.por)}${x.tipo==='video'?' · video':''}</figcaption><button class="del" title="Borrar" data-id="${d.id}">×</button>`;
+    const safe = u => /^https:\/\/firebasestorage\.googleapis\.com\//.test(String(u || '')) ? u : '';
+    fig.innerHTML = `<a href="${esc(safe(x.url) || '#')}" target="_blank" rel="noopener"><img src="${esc(safe(x.thumb) || safe(x.url) || '')}" alt=""></a><figcaption>${esc(x.por)}${x.tipo==='video'?' · video':''}</figcaption><button class="del" title="Borrar" data-id="${d.id}">×</button>`;
     fig.querySelector('.del').onclick = async ev => { if (fig.dataset.confirm !== '1') { fig.dataset.confirm = '1'; ev.target.textContent = '✓'; setTimeout(() => { fig.dataset.confirm = ''; ev.target.textContent = '×'; }, 3000); return; }
       try { await F.deleteDoc(F.doc(db,'fotos',d.id)); try { await S.deleteObject(S.ref(storage, x.url)); if (x.thumb) await S.deleteObject(S.ref(storage, x.thumb)); } catch {} fig.remove(); } catch (e) { alert(e.message); } };
     $('fotos').append(fig); });

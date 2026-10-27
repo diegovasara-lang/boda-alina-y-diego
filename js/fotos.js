@@ -2,7 +2,9 @@
 const B = window.BODA, INV = window.INVITADOS || {};
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const clave = (new URLSearchParams(location.search).get('i') || '').toLowerCase().trim();
+const qi = (new URLSearchParams(location.search).get('i') || '').toLowerCase().trim();
+const hh = location.hash.replace('#','').toLowerCase().trim();
+const clave = qi || (INV[hh] ? hh : '');
 const invitado = INV[clave] || null;
 let fb = null;
 async function initFirebase(){
@@ -96,7 +98,8 @@ async function uploadOne({f, li, who}){
 const gallery = $('gallery'); let lastDoc = null; const PAGE = 24;
 function cardFor(d){
   const b = document.createElement('button'); b.type = 'button';
-  b.innerHTML = `<img src="${esc(d.thumb || d.url)}" alt="Foto subida por ${esc(d.por)}" loading="lazy">${d.tipo === 'video' ? '<span class="play">▶</span>' : ''}<span class="by">${esc(d.por)}</span>`;
+  const media = d.tipo === 'video' && !d.thumb ? `<video src="${esc(d.url)}#t=0.1" preload="metadata" muted playsinline></video>` : `<img src="${esc(d.thumb || d.url)}" alt="Foto subida por ${esc(d.por)}" loading="lazy">`;
+  b.innerHTML = `${media}${d.tipo === 'video' ? '<span class="play">▶</span>' : ''}<span class="by">${esc(d.por)}</span>`;
   b.addEventListener('click', () => openLb(d)); return b;
 }
 async function loadGallery(more){

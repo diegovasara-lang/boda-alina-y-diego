@@ -7,17 +7,21 @@
 <meta name="description" content="Nos casamos el 20 de diciembre de 2026 en Atenas, Costa Rica. Toda la información y confirmación de asistencia.">
 <meta property="og:title" content="Alina & Diego · 20.12.2026">
 <meta property="og:description" content="Nos casamos. Abre tu invitación.">
-<meta property="og:image" content="img/castillo.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bodaalinaydiego.com/">
+<meta property="og:image" content="https://bodaalinaydiego.com/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f1ece2">
 <meta name="robots" content="noindex, nofollow">
-<link rel="preload" as="image" href="img/frente-800.jpg" media="(max-width: 600px)">
-<link rel="preload" as="image" href="img/frente.jpg" media="(min-width: 601px)">
+<link rel="preload" as="image" href="img/frente.jpg" imagesrcset="img/frente-800.jpg 800w, img/frente.jpg 1400w" imagesizes="(max-width: 540px) 100vw, 540px" fetchpriority="high">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="icon" type="image/png" href="assets/monograma.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=11">
+<link rel="stylesheet" href="css/estilo.css?v=12">
 </head>
 <body>
 
@@ -107,7 +111,7 @@
       <div class="field" id="songField">
         <label for="songInput">¿Qué canción no puede faltar? <span class="opt">(hasta dos)</span></label>
         <div class="song-box">
-          <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" aria-autocomplete="list" aria-controls="songList">
+          <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songList" enterkeyhint="search">
           <ul class="song-list" id="songList" role="listbox" hidden></ul>
         </div>
         <ul class="song-picked" id="songPicked"></ul>
@@ -233,9 +237,6 @@
   </footer>
 </main>
 
-  <p class="lb-cap" id="lbCap"></p>
-</div>
-
 <a class="rsvp-pill" id="rsvpPill" href="#confirmar" hidden>Confirmar asistencia</a>
 
 <!-- Música -->
@@ -244,8 +245,8 @@
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="musicTxt">Música</span>
 </button>
 
-<script src="js/config.js?v=11"></script>
-<script src="js/invitados.js?v=11"></script>
-<script src="js/app.js?v=11" type="module"></script>
+<script src="js/config.js?v=12"></script>
+<script src="js/invitados.js?v=12"></script>
+<script src="js/app.js?v=12" type="module"></script>
 </body>
 </html>

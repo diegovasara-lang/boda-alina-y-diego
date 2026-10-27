@@ -6,22 +6,35 @@ service cloud.firestore {
       return request.auth != null
         && request.auth.token.email in ['diego.vasara@gmail.com'];   // ← agregar el correo de Alina si quiere entrar al panel
     }
+    function textoOpc(v, n) { return v == null || (v is string && v.size() <= n); }
 
-    // Confirmaciones: cualquiera puede enviar la suya; solo los novios las leen.
+    // Confirmaciones: cualquiera envía la suya (su clave es el id); solo los novios listan y borran.
     match /rsvp/{id} {
-      allow get: if true;                 // cada invitado puede recuperar su propia respuesta por su clave
+      allow get: if true;                 // cada invitado recupera su propia respuesta por su clave
       allow list, delete: if esAdmin();
-      allow create, update: if request.resource.data.respuesta in ['si', 'no', 'pendiente']
-        && request.resource.data.nombre is string && request.resource.data.nombre.size() <= 120
-        && request.resource.data.keys().hasOnly(['clave','nombre','respuesta','personas','fechaConfirma','mensaje','canciones','ts','ua','actualizado']);
+      allow create, update: if request.resource.data.keys().hasOnly(['clave','nombre','respuesta','personas','fechaConfirma','mensaje','canciones','ts','ua','actualizado'])
+        && request.resource.data.clave == id
+        && request.resource.data.respuesta in ['si', 'no', 'pendiente']
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() > 0 && request.resource.data.nombre.size() <= 120
+        && request.resource.data.personas is list && request.resource.data.personas.size() <= 10
+        && request.resource.data.canciones is list && request.resource.data.canciones.size() <= 2
+        && textoOpc(request.resource.data.mensaje, 500)
+        && textoOpc(request.resource.data.fechaConfirma, 10)
+        && textoOpc(request.resource.data.ua, 120)
+        && request.resource.data.ts is number;
     }
 
-    // Fotos: todos ven la galería; cualquiera puede registrar una subida; solo los novios borran.
+    // Fotos: todos ven la galería; cualquiera registra una subida (solo URLs de nuestro Storage); solo los novios borran.
     match /fotos/{id} {
       allow read: if true;
-      allow create: if request.resource.data.por is string && request.resource.data.por.size() <= 80
+      allow create: if request.resource.data.keys().hasOnly(['por','clave','tipo','url','thumb','nombre','bytes','w','h','ts','creado'])
+        && request.resource.data.por is string && request.resource.data.por.size() > 0 && request.resource.data.por.size() <= 80
         && request.resource.data.url is string
-        && request.resource.data.keys().hasOnly(['por','clave','tipo','url','thumb','nombre','bytes','w','h','ts','creado']);
+        && request.resource.data.url.matches('https://firebasestorage[.]googleapis[.]com/.*')
+        && (request.resource.data.thumb == null || (request.resource.data.thumb is string && request.resource.data.thumb.matches('https://firebasestorage[.]googleapis[.]com/.*')))
+        && request.resource.data.tipo in ['foto', 'video']
+        && textoOpc(request.resource.data.nombre, 120)
+        && request.resource.data.ts is number;
       allow update: if false;
       allow delete: if esAdmin();
     }

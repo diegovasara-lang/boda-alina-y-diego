@@ -5,7 +5,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Invitado (?i=clave o #clave) ---------- */
-const clave = (new URLSearchParams(location.search).get('i') || location.hash.replace('#','') || '').toLowerCase().trim();
+const qi = (new URLSearchParams(location.search).get('i') || '').toLowerCase().trim();
+const hh = location.hash.replace('#','').toLowerCase().trim();
+const clave = qi || (INV[hh] ? hh : '');
 const invitado = INV[clave] || null;
 if (invitado) {
   $('guestTitle').textContent = invitado.titulo;
@@ -60,6 +62,7 @@ const EVENTO = {
 };
 (function(){
   const f = d => new Date(d).toISOString().replace(/[-:]|\.\d{3}/g,'');
+  const icsTxt = t => String(t).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
   const u = new URL('https://calendar.google.com/calendar/render');
   u.searchParams.set('action','TEMPLATE'); u.searchParams.set('text', EVENTO.titulo);
   u.searchParams.set('dates', f(B.fechaISO)+'/'+f(B.finISO));
@@ -67,7 +70,7 @@ const EVENTO = {
   $('calGoogle').href = u.toString();
   const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Alina y Diego//Boda//ES','CALSCALE:GREGORIAN','BEGIN:VEVENT',
     'UID:boda-alina-diego-2026@invitacion', 'DTSTAMP:'+f(Date.now()), 'DTSTART:'+f(B.fechaISO), 'DTEND:'+f(B.finISO),
-    'SUMMARY:'+EVENTO.titulo, 'DESCRIPTION:'+EVENTO.desc.replace(/\n/g,'\\n'), 'LOCATION:'+EVENTO.lugar.replace(/,/g,'\\,'),
+    'SUMMARY:'+icsTxt(EVENTO.titulo), 'DESCRIPTION:'+icsTxt(EVENTO.desc), 'LOCATION:'+icsTxt(EVENTO.lugar),
     'GEO:9.9784079;-84.3798189', 'URL:'+C.maps, 'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:Mañana es la boda de Alina y Diego','END:VALARM',
     'END:VEVENT','END:VCALENDAR'].join('\r\n');
   try { $('calIcs').href = URL.createObjectURL(new Blob([ics], {type:'text/calendar;charset=utf-8'})); } catch { $('calIcs').hidden = true; }
@@ -138,7 +141,18 @@ if (!reduced) {
 /* ---------- Música (audio real: funciona con el switch de silencio del iPhone) ---------- */
 const bgm = $('bgm'); bgm.volume = 0;
 let fadeTimer = 0;
-function fadeTo(v, ms, then){ clearInterval(fadeTimer); const step = (v - bgm.volume) / (ms/50); fadeTimer = setInterval(() => { let nv = bgm.volume + step; if ((step > 0 && nv >= v) || (step < 0 && nv <= v)) { nv = v; clearInterval(fadeTimer); then && then(); } bgm.volume = Math.max(0, Math.min(1, nv)); }, 50); }
+// En iOS el volumen es de solo lectura (siempre 1): ahí no hay fundido, se pausa directo.
+const volumeAjustable = (() => { try { bgm.volume = .5; const ok = Math.abs(bgm.volume - .5) < .01; bgm.volume = 0; return ok; } catch { return false; } })();
+function fadeTo(v, ms, then){
+  clearInterval(fadeTimer);
+  if (!volumeAjustable) { then && then(); return; }
+  const t0 = Date.now(), v0 = bgm.volume;
+  fadeTimer = setInterval(() => {
+    const k = Math.min(1, (Date.now() - t0) / ms);
+    bgm.volume = Math.max(0, Math.min(1, v0 + (v - v0) * k));
+    if (k >= 1) { clearInterval(fadeTimer); then && then(); }
+  }, 50);
+}
 function paintMusic(){ const on = !bgm.paused; $('musicBtn').classList.toggle('on', on); $('musicBtn').setAttribute('aria-pressed', on); $('musicTxt').textContent = on ? 'Sonando' : 'Música'; }
 async function playMusic(){ try { await bgm.play(); fadeTo(.32, 3500); } catch(e) { /* el navegador bloqueó el autoplay: el botón flotante queda disponible */ } paintMusic(); }
 function stopMusic(){ quiereMusica = false; fadeTo(0, 800, () => { bgm.pause(); paintMusic(); }); paintMusic(); setTimeout(paintMusic, 850); }
@@ -150,7 +164,7 @@ bgm.addEventListener('play', () => { quiereMusica = true; });
 $('musicBtn').addEventListener('click', () => { if (!bgm.paused) quiereMusica = false; }, true);
 function reanudar(){
   if (!quiereMusica || !bgm.paused) return;
-  bgm.play().then(() => { bgm.volume = Math.max(bgm.volume, .32); paintMusic(); }).catch(() => {
+  bgm.play().then(() => { if (volumeAjustable) bgm.volume = Math.max(bgm.volume, .32); paintMusic(); }).catch(() => {
     // El navegador exige un gesto: reanudamos en el primer toque
     const once = () => { if (quiereMusica && bgm.paused) bgm.play().then(paintMusic).catch(()=>{}); };
     ['touchstart','pointerdown','keydown'].forEach(ev => addEventListener(ev, once, {once:true, passive:true}));
@@ -190,14 +204,16 @@ const canciones = [];
 (function(){
   const input = $('songInput'), list = $('songList'), picked = $('songPicked');
   let timer = 0, items = [], sel = -1, lastQ = '';
-  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="" onerror="this.remove()">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
-  const close = () => { list.hidden = true; list.innerHTML = ''; items = []; sel = -1; };
-  const add = c => { if (canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
+  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
+  const close = () => { list.hidden = true; list.innerHTML = ''; items = []; sel = -1; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); };
+  const add = c => { if (!c || canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
+  const pick = li => add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]);
   const show = q => {
     const manual = {titulo: q, artista: 'Escrita a mano', arte: null, manual: true};
-    const aviso = items.length ? '' : `<li class="manual" style="cursor:default;color:var(--piedra)">No encontramos coincidencias; puedes guardarla tal cual:</li>`;
-    list.innerHTML = aviso + items.map((c,i) => `<li role="option" data-i="${i}">${c.arte ? `<img src="${esc(c.arte)}" alt="" onerror="this.remove()">` : ''}<div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
-    items.push(manual); list.hidden = false; sel = -1;
+    const aviso = items.length ? '' : `<li class="aviso" aria-hidden="true">No encontramos coincidencias; puedes guardarla tal cual:</li>`;
+    list.innerHTML = aviso + items.map((c,i) => `<li role="option" id="songOpt${i}" data-i="${i}">${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" id="songOptM" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
+    items.push(manual); list.hidden = false; sel = -1; input.setAttribute('aria-expanded', 'true');
+    if (window.visualViewport && list.getBoundingClientRect().bottom > visualViewport.height) setTimeout(() => input.scrollIntoView({block:'start', behavior:'smooth'}), 60);
   };
   input.addEventListener('input', () => {
     const q = input.value.trim(); clearTimeout(timer); if (q.length < 2) { close(); return; }
@@ -230,15 +246,20 @@ const canciones = [];
     } catch (e) { console.warn('Deezer no respondió', e.message); }
     return [];
   }
-  list.addEventListener('mousedown', e => { const li = e.target.closest('li[role=option]'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); });
+  // mousedown solo evita que el input pierda el foco; la selección va en click (permite hacer scroll en la lista con el dedo)
+  list.addEventListener('mousedown', e => e.preventDefault());
+  list.addEventListener('click', e => { const li = e.target.closest('li[role=option]'); if (li) pick(li); });
+  list.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);
+  picked.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);
   input.addEventListener('keydown', e => {
-    if (list.hidden) return; const lis = [...list.children];
+    if (e.key === 'Enter') e.preventDefault();             // nunca enviar el formulario desde este campo
+    if (list.hidden) return; const lis = [...list.querySelectorAll('li[role=option]')];
     if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(sel+1, lis.length-1); } else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(sel-1, 0); }
-    else if (e.key === 'Enter') { e.preventDefault(); const li = lis[sel] || lis[lis.length-1]; add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); return; }
+    else if (e.key === 'Enter') { const li = lis[sel] || lis[lis.length-1]; if (li) pick(li); return; }
     else if (e.key === 'Escape') { close(); return; } else return;
     lis.forEach((l,i) => l.setAttribute('aria-selected', i === sel));
+    if (lis[sel]) { input.setAttribute('aria-activedescendant', lis[sel].id); lis[sel].scrollIntoView({block:'nearest'}); }
   });
-  list.addEventListener('touchstart', e => { const li = e.target.closest('li[role=option]'); if (!li) return; e.preventDefault(); add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]); }, {passive:false});
   input.addEventListener('blur', () => setTimeout(close, 250));
   picked.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; canciones.splice(+b.dataset.i, 1); paint(); });
   document.addEventListener('rsvp:restore', e => { canciones.splice(0, canciones.length, ...(e.detail || [])); paint(); });
@@ -246,6 +267,9 @@ const canciones = [];
 
 /* ---------- RSVP ---------- */
 const form = $('rsvpForm');
+// Mientras se escribe en el formulario, los botones flotantes se esconden para no tapar campos
+form.addEventListener('focusin', e => { if (e.target.matches('input[type=text],input[type=date],textarea')) document.body.classList.add('typing'); });
+form.addEventListener('focusout', () => setTimeout(() => { if (!form.contains(document.activeElement) || !document.activeElement.matches('input[type=text],input[type=date],textarea')) document.body.classList.remove('typing'); }, 120));
 const LS_KEY = 'rsvp:' + (clave || 'anon');
 if (!invitado) $('nameField').hidden = false;
 if (invitado && invitado.personas.length > 1) {
@@ -275,7 +299,16 @@ function showDone(data){
 // Si ya respondió desde otro teléfono, recuperar su respuesta de la base de datos
 fbReady.then(async () => { if (!fb || !clave) return; try { const snap = await fb.fs.getDoc(fb.fs.doc(fb.db, 'rsvp', clave)); if (snap.exists()) { const d = snap.data(); try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch {} showDone(d); } } catch (e) { /* lectura no permitida para invitados: se usa la copia local */ } });
 try { const prev = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); if (prev && prev.respuesta) showDone(prev); } catch {}
-$('editBtn').addEventListener('click', () => { $('rsvpDone').hidden = true; form.hidden = false; });
+function restoreForm(d){
+  if (!d) return;
+  const r = form.querySelector(`input[name=respuesta][value="${d.respuesta}"]`); if (r) r.checked = true;
+  if (!invitado && d.nombre) $('rsvpName').value = d.nombre;
+  if (d.fechaConfirma) $('rsvpWhen').value = d.fechaConfirma;
+  $('rsvpMsg').value = d.mensaje || '';
+  if (invitado && invitado.personas.length > 1 && Array.isArray(d.personas) && d.personas.length) form.querySelectorAll('input[name=persona]').forEach(i => { i.checked = d.personas.includes(i.value); });
+  form.dispatchEvent(new Event('change'));
+}
+$('editBtn').addEventListener('click', () => { try { restoreForm(JSON.parse(localStorage.getItem(LS_KEY) || 'null')); } catch {} $('rsvpDone').hidden = true; form.hidden = false; form.scrollIntoView({block:'start', behavior:'smooth'}); });
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
@@ -292,8 +325,10 @@ form.addEventListener('submit', async e => {
   try {
     await fbReady;
     if (fb) {
-      const id = clave || ('anon-' + nombre.toLowerCase().replace(/[^a-z0-9ñ]+/g,'-').slice(0,40) + '-' + Math.random().toString(36).slice(2,7));
-      await fb.fs.setDoc(fb.fs.doc(fb.db, 'rsvp', id), {...data, actualizado: fb.fs.serverTimestamp()}, {merge:true});
+      let id = clave;
+      if (!id) { try { id = localStorage.getItem('rsvp:anon-id'); } catch {} if (!id) { id = 'anon-' + nombre.toLowerCase().replace(/[^a-z0-9ñ]+/g,'-').slice(0,40) + '-' + Math.random().toString(36).slice(2,7); try { localStorage.setItem('rsvp:anon-id', id); } catch {} } }
+      data.clave = id;
+      await fb.fs.setDoc(fb.fs.doc(fb.db, 'rsvp', id), {...data, actualizado: fb.fs.serverTimestamp()});
     } else {
       $('formNote').textContent = 'Modo demostración: la respuesta se guardó solo en este teléfono. Cuando conectemos la base de datos, quedará registrada.'; $('formNote').hidden = false;
     }

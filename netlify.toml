@@ -2,6 +2,24 @@
 [build]
   publish = "."
 
+# Archivos de trabajo que no deben servirse públicamente
+[[redirects]]
+  from = "/invitacion.html"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/INSTRUCCIONES.md"
+  to = "/"
+  status = 404
+[[redirects]]
+  from = "/firebase/*"
+  to = "/"
+  status = 404
+[[redirects]]
+  from = "/netlify.toml"
+  to = "/"
+  status = 404
+
 [[headers]]
   for = "/*"
   [headers.values]
