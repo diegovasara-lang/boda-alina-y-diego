@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fotos · Boda de Alina &amp; Diego</title>
+<meta name="description" content="Comparte tus fotos y videos de la boda de Alina y Diego.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1b1814">
+<link rel="icon" type="image/png" href="assets/monograma.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=8">
+</head>
+<body class="open">
+<main class="page">
+  <header class="fotos-hero">
+    <img src="assets/monograma.png" alt="Alina & Diego">
+    <p class="pre">Recuerdos</p>
+    <h1>Comparte tus fotos</h1>
+    <p class="date">20 · 12 · 2026</p>
+  </header>
+
+  <section class="sec" id="fotos">
+    <p class="lead sm" style="margin-top:0">Queremos ver la boda con sus ojos. Suban aquí todas las fotos y videos que tomen hoy; quedan guardadas con su nombre y las veremos todas.</p>
+
+    <form class="upload" id="uploadForm">
+      <div class="field">
+        <label for="upName">¿Quién las sube?</label>
+        <input id="upName" list="peopleList" type="text" autocomplete="off" placeholder="Escribe o elige tu nombre">
+        <datalist id="peopleList"></datalist>
+      </div>
+      <label class="drop" id="drop" for="upFiles">
+        <input id="upFiles" type="file" accept="image/*,video/*" multiple hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="1"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-3h5L16 7"/></svg>
+        <b>Elegir fotos o videos</b>
+        <small>Puedes seleccionar muchas a la vez</small>
+      </label>
+      <ul class="queue" id="queue"></ul>
+      <p class="form-note" id="upNote" hidden></p>
+    </form>
+
+    <div class="gallery" id="gallery"></div>
+    <button class="btn more" id="moreBtn" type="button" hidden>Ver más fotos</button>
+  </section>
+
+  <footer class="end">
+    <p class="pre">Gracias por acompañarnos</p>
+    <p class="script">Te queremos</p>
+    <img class="end-logo" src="assets/monograma.png" alt="Alina & Diego">
+  </footer>
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" id="lbClose" type="button" aria-label="Cerrar">×</button>
+  <div class="lb-body" id="lbBody"></div>
+  <p class="lb-cap" id="lbCap"></p>
+</div>
+
+<script src="js/config.js?v=8"></script>
+<script src="js/invitados.js?v=8"></script>
+<script src="js/fotos.js?v=8" type="module"></script>
+</body>
+</html>

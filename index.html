@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Boda de Alina &amp; Diego · 20.12.2026</title>
+<meta name="description" content="Nos casamos el 20 de diciembre de 2026 en Atenas, Costa Rica. Toda la información y confirmación de asistencia.">
+<meta property="og:title" content="Alina & Diego · 20.12.2026">
+<meta property="og:description" content="Nos casamos. Abre tu invitación.">
+<meta property="og:image" content="img/castillo.jpg">
+<meta name="theme-color" content="#f1ece2">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preload" as="image" href="img/frente-800.jpg" media="(max-width: 600px)">
+<link rel="preload" as="image" href="img/frente.jpg" media="(min-width: 601px)">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="icon" type="image/png" href="assets/monograma.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=8">
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+<!-- Portada -->
+<div class="cover" id="cover" aria-live="polite">
+  <canvas class="petals" id="petals" aria-hidden="true"></canvas>
+  <img class="cover-logo" src="assets/monograma.png" alt="Monograma A y D">
+  <div class="cover-line" aria-hidden="true"></div>
+  <p class="cover-date">20 · 12 · 2026</p>
+  <p class="cover-for" id="coverFor">Tienes una invitación</p>
+  <p class="cover-names" id="coverNames"></p>
+  <button class="btn fill" id="openBtn" type="button">Abrir invitación</button>
+</div>
+
+<main class="page" id="page">
+
+  <header class="hero" id="inicio">
+    <div class="hero-media"><img src="img/frente.jpg" srcset="img/frente-800.jpg 800w, img/frente.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego frente a frente en el jardín" fetchpriority="high"></div>
+    <div class="hero-text">
+      <img class="hero-mono" src="assets/monograma.png" alt="" aria-hidden="true">
+      <h1 class="visually-hidden">Alina y Diego se casan el 20 de diciembre de 2026</h1>
+      <img class="hero-wordmark" src="assets/wordmark.png" alt="Alina & Diego">
+      <p class="hero-sub">Nos casamos</p>
+      <p class="hero-date">20 · 12 · 2026</p>
+      <p class="hero-place">Atenas, Costa Rica</p>
+      <a class="btn hero-cta" href="#confirmar">Confirmar asistencia</a>
+    </div>
+    <a class="scroll-hint" href="#invitado" aria-label="Seguir bajando"><span>Desliza para ver más</span><i></i></a>
+  </header>
+
+  <!-- Invitado -->
+  <section class="sec reveal" id="invitado">
+    <p class="pre">Para</p>
+    <h2 class="guest-title" id="guestTitle">Nuestros invitados</h2>
+    <ul class="guest-names" id="guestNames"></ul>
+    <p class="lead">Nuestra felicidad solo está completa cuando la compartimos con las personas que amamos. Después de tantos años compartiendo la vida, nos haría inmensamente felices que nos acompañaran a celebrar nuestra historia de amor y a unirnos en matrimonio, reafirmando la promesa de seguir eligiéndonos cada día, para toda la vida.</p>
+    <div class="count" aria-label="Cuenta regresiva">
+      <div><b id="cd">—</b><span>días</span></div>
+      <div><b id="ch">—</b><span>horas</span></div>
+      <div><b id="cm">—</b><span>min</span></div>
+      <div><b id="cs">—</b><span>seg</span></div>
+    </div>
+  </section>
+
+  <!-- Confirmación -->
+  <section class="sec reveal rsvp tight" id="confirmar">
+    <p class="pre">Asistencia</p>
+    <h2 class="t">Confirma tu asistencia</h2>
+    <p class="lead sm">Tu confirmación es muy importante para nosotros. Por favor respóndenos antes del <em id="deadline"></em>.</p>
+
+    <form class="rsvp-form" id="rsvpForm" novalidate>
+      <div class="field" id="nameField" hidden>
+        <label for="rsvpName">Tu nombre</label>
+        <input id="rsvpName" name="nombre" type="text" autocomplete="name" placeholder="Nombre y apellido">
+      </div>
+
+      <fieldset class="choices" id="choices">
+        <legend class="visually-hidden">Respuesta</legend>
+        <label class="choice"><input type="radio" name="respuesta" value="si" id="rSi"><span><b>Confirmo mi asistencia</b><small>Ahí estaremos</small></span></label>
+        <label class="choice"><input type="radio" name="respuesta" value="no" id="rNo"><span><b>No podré asistir</b><small>Los acompaño de corazón</small></span></label>
+        <label class="choice"><input type="radio" name="respuesta" value="pendiente" id="rPend"><span><b>Aún no puedo confirmar</b><small>Les aviso más adelante</small></span></label>
+      </fieldset>
+
+      <div class="field" id="whoField" hidden>
+        <p class="lbl">¿Quiénes asistirán?</p>
+        <div class="who" id="whoList"></div>
+      </div>
+
+      <div class="field" id="whenField" hidden>
+        <label for="rsvpWhen">¿Para cuándo podrías confirmarnos?</label>
+        <input id="rsvpWhen" name="fechaConfirma" type="date">
+      </div>
+
+      <div class="field">
+        <label for="rsvpMsg">Mensaje para los novios <span class="opt">(opcional)</span></label>
+        <textarea id="rsvpMsg" name="mensaje" rows="2" placeholder="Alergias, restricciones, o solo cariño"></textarea>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button class="btn fill wide" id="sendBtn" type="submit">Enviar respuesta</button>
+      <p class="form-note" id="formNote" hidden></p>
+    </form>
+
+    <div class="rsvp-done" id="rsvpDone" hidden>
+      <img src="assets/monograma.png" alt="" class="done-mono">
+      <p class="done-title" id="doneTitle">Gracias</p>
+      <p class="lead sm" id="doneText" style="margin-top:10px"></p>
+      <p class="sent"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="sentDate">Respuesta enviada</span></p>
+      <div class="cal" id="calBox" hidden>
+        <a class="btn fill" id="calGoogle" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agregar a Google Calendar</a>
+        <a class="btn" id="calIcs" href="#" download="Boda-Alina-y-Diego.ics"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5 12 18l2.5-2.5"/></svg>Apple · Outlook (.ics)</a>
+        <p class="cal-detail" id="calDetail"></p>
+      </div>
+      <div class="btns" style="margin-top:18px"><button class="btn" id="editBtn" type="button">Cambiar mi respuesta</button></div>
+    </div>
+
+    <p class="adults" id="adultsNote" hidden>Aunque amamos a los pequeños, esta celebración es solo para adultos. Gracias por entender.</p>
+  </section>
+
+  <figure class="photo tall parallax"><img src="img/arbol.jpg" srcset="img/arbol-800.jpg 800w, img/arbol.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego bajo un árbol" loading="lazy"></figure>
+
+  <!-- Lugares -->
+  <section class="sec dark" id="lugares">
+    <div class="inner reveal">
+      <p class="pre">Dónde y cuándo</p>
+      <h2 class="t">Ceremonia<br>&amp; celebración</h2>
+
+      <article class="venue">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4v8M20 8h8M10 44V24l14-10 14 10v20M10 44h28M19 44V33a5 5 0 0 1 10 0v11M6 44h36"/></svg>
+        <p class="what">Ceremonia</p>
+        <p class="where" id="igName"></p>
+        <p class="sub" id="igPlace"></p>
+        <p class="time" id="igTime"></p>
+        <p class="addr" id="igAddr"></p>
+        <div class="btns">
+          <a class="btn" id="igMaps" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 22s7-7.2 7-13a7 7 0 0 0-14 0c0 5.8 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>Google Maps</a>
+          <a class="btn" id="igWaze" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 14a8 8 0 1 1 5 7.4L4 22l1.4-4.2A8 8 0 0 1 4 14z"/><circle cx="9.5" cy="12" r=".6"/><circle cx="14.5" cy="12" r=".6"/><path d="M9 15.5c1.5 1.3 4.5 1.3 6 0"/></svg>Waze</a>
+        </div>
+      </article>
+
+      <article class="venue">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6l4 14c.7 2.4 2.8 4 5 4h2c2.2 0 4.3-1.6 5-4l4-14H14zM24 24v16M16 40h16M15 12h18"/></svg>
+        <p class="what">Celebración</p>
+        <p class="where" id="rcName"></p>
+        <p class="sub" id="rcPlace"></p>
+        <p class="time" id="rcTime"></p>
+        <p class="addr" id="rcAddr"></p>
+        <div class="btns">
+          <a class="btn" id="rcMaps" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 22s7-7.2 7-13a7 7 0 0 0-14 0c0 5.8 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>Google Maps</a>
+          <a class="btn" id="rcWaze" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 14a8 8 0 1 1 5 7.4L4 22l1.4-4.2A8 8 0 0 1 4 14z"/><circle cx="9.5" cy="12" r=".6"/><circle cx="14.5" cy="12" r=".6"/><path d="M9 15.5c1.5 1.3 4.5 1.3 6 0"/></svg>Waze</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <figure class="photo wide parallax"><img src="img/castillo.jpg" srcset="img/castillo-800.jpg 800w, img/castillo.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego frente al castillo de la hacienda" loading="lazy"></figure>
+
+  <!-- Programa (oculto hasta que esté definido) -->
+  <section class="sec reveal" id="programa" hidden>
+    <p class="pre">El día</p>
+    <h2 class="t">Programa</h2>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <!-- Dress code -->
+  <section class="sec reveal" id="vestimenta">
+    <p class="pre">Código de vestimenta</p>
+    <h2 class="dc-title" id="dcTitle"></h2>
+    <p class="dc-sub" id="dcSub"></p>
+    <div class="dc-cols">
+      <div class="dc-col">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18 6c0 4 2 6 6 6s6-2 6-6M18 6l-6 10 6 3-4 23h20l-4-23 6-3-6-10"/></svg>
+        <h3>Damas</h3>
+        <ul id="dcDamas"></ul>
+      </div>
+      <div class="dc-col">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l4 6-4 30H16l-4-30 4-6zM24 12l-4-6M24 12l4-6M24 12v30M20 20h8"/></svg>
+        <h3>Caballeros</h3>
+        <ul id="dcCaballeros"></ul>
+      </div>
+    </div>
+    <p class="sw-label">Colores reservados</p>
+    <div class="swatches" id="dcEvitar"></div>
+    <p class="dc-note" id="dcNota"></p>
+    <div class="btns" style="margin-top:28px">
+      <a class="btn" id="pinBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10.5 16.5 12 9.5M9 13.5c.5 1 1.6 1.5 2.7 1.5 2 0 3.3-1.6 3.3-3.6C15 9.6 13.6 8.5 12 8.5c-2 0-3.5 1.4-3.5 3.2 0 .7.3 1.4.8 1.8"/></svg>Ver ejemplos en Pinterest</a>
+    </div>
+  </section>
+
+  <figure class="photo tall parallax"><img src="img/abrazo.jpg" srcset="img/abrazo-800.jpg 800w, img/abrazo.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina abraza a Diego en el jardín" loading="lazy"></figure>
+
+  <!-- Regalos -->
+  <section class="sec reveal" id="regalos">
+    <p class="pre">Obsequios</p>
+    <h2 class="t">Lluvia de sobres</h2>
+    <p class="lead sm" id="regalosTexto"></p>
+    <div class="accts" id="accts"></div>
+  </section>
+
+  <figure class="photo wide parallax"><img src="img/manos.jpg" srcset="img/manos-800.jpg 800w, img/manos.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego tomados de la mano frente al muro de piedra" loading="lazy"></figure>
+
+  <figure class="photo parallax"><img src="img/escalera.jpg" srcset="img/escalera-800.jpg 800w, img/escalera.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego sentados en las gradas de piedra" loading="lazy"></figure>
+
+  <footer class="end reveal">
+    <p class="pre">Gracias por acompañarnos</p>
+    <p class="script">Te esperamos</p>
+    <img class="end-logo" src="assets/monograma.png" alt="Alina & Diego">
+    <p class="end-date">20 · 12 · 2026</p>
+    <small>Hacienda Vargas Ú, Atenas, Costa Rica</small>
+  </footer>
+</main>
+
+  <p class="lb-cap" id="lbCap"></p>
+</div>
+
+<a class="rsvp-pill" id="rsvpPill" href="#confirmar" hidden>Confirmar asistencia</a>
+
+<!-- Música -->
+<audio id="bgm" src="assets/musica.mp3" loop preload="none"></audio>
+<button class="music" id="musicBtn" type="button" aria-pressed="false" aria-label="Música de fondo">
+  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="musicTxt">Música</span>
+</button>
+
+<script src="js/config.js?v=8"></script>
+<script src="js/invitados.js?v=8"></script>
+<script src="js/app.js?v=8" type="module"></script>
+</body>
+</html>

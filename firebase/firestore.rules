@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function esAdmin() {
+      return request.auth != null
+        && request.auth.token.email in ['diego.vasara@gmail.com'];   // ← agregar el correo de Alina si quiere entrar al panel
+    }
+
+    // Confirmaciones: cualquiera puede enviar la suya; solo los novios las leen.
+    match /rsvp/{id} {
+      allow get: if true;                 // cada invitado puede recuperar su propia respuesta por su clave
+      allow list, delete: if esAdmin();
+      allow create, update: if request.resource.data.respuesta in ['si', 'no', 'pendiente']
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() <= 120
+        && request.resource.data.keys().hasOnly(['clave','nombre','respuesta','personas','fechaConfirma','mensaje','ts','ua','actualizado']);
+    }
+
+    // Fotos: todos ven la galería; cualquiera puede registrar una subida; solo los novios borran.
+    match /fotos/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.por is string && request.resource.data.por.size() <= 80
+        && request.resource.data.url is string
+        && request.resource.data.keys().hasOnly(['por','clave','tipo','url','thumb','nombre','bytes','w','h','ts','creado']);
+      allow update: if false;
+      allow delete: if esAdmin();
+    }
+  }
+}

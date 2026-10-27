@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Boda Alina & Diego</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/monograma.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Jost:wght@300;400;500&display=swap">
+<style>
+:root{--marfil:#f2eee6;--marfil-2:#e9e3d6;--tinta:#1d1a16;--cafe:#4a3b32;--oliva:#6b7446;--piedra:#a89f8f;--blanco:#fbf9f4;--rojo:#9b3b2f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--marfil);color:var(--tinta);font:300 15px/1.5 Jost,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left)) 60px}
+h1{font:400 32px "Cormorant Garamond",serif;margin:0 0 4px}
+h2{font:400 22px "Cormorant Garamond",serif;margin:32px 0 10px}
+.wrap{max-width:1000px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--oliva)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--cafe);color:var(--cafe);background:none;padding:10px 16px;font:400 11.5px Jost;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;min-height:40px}
+.btn.fill{background:var(--oliva);border-color:var(--oliva);color:#fff}
+.btn.sm{padding:6px 10px;min-height:0;font-size:10px}
+.btn.danger{border-color:var(--rojo);color:var(--rojo)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:18px}
+.stat{background:var(--blanco);border:1px solid var(--marfil-2);padding:16px}
+.stat b{display:block;font:400 34px "Cormorant Garamond",serif;line-height:1}
+.stat span{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--piedra)}
+table{width:100%;border-collapse:collapse;background:var(--blanco);border:1px solid var(--marfil-2);font-size:14px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--marfil-2);text-align:left;vertical-align:top}
+th{font-weight:400;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--oliva)}
+.tag{display:inline-block;padding:2px 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid}
+.tag.si{color:var(--oliva);border-color:var(--oliva)}.tag.no{color:var(--rojo);border-color:var(--rojo)}.tag.pendiente{color:var(--piedra);border-color:var(--piedra)}
+.scroll{overflow-x:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.grid figure{margin:0;position:relative;aspect-ratio:1;background:var(--marfil-2)}
+.grid img{width:100%;height:100%;object-fit:cover}
+.grid figcaption{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid .del{position:absolute;top:4px;right:4px;background:rgba(255,255,255,.9);border:0;width:26px;height:26px;cursor:pointer;color:var(--rojo)}
+.muted{color:var(--piedra);font-size:13px}
+#login{margin-top:30px}
+.links{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13px;align-items:center}
+.links code{font-size:12px;word-break:break-all}
+#msg{margin-top:12px;color:var(--rojo)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Panel privado</p>
+  <h1>Boda de Alina &amp; Diego</h1>
+  <p class="muted">Confirmaciones, fotos y enlaces de invitación.</p>
+
+  <div id="login"><button class="btn fill" id="loginBtn" type="button">Entrar con Google</button><p id="msg"></p></div>
+
+  <div id="panel" hidden>
+    <p class="muted" id="who"></p>
+    <div class="stats">
+      <div class="stat"><b id="sSi">0</b><span>Personas confirmadas</span></div>
+      <div class="stat"><b id="sGrupos">0</b><span>Invitaciones que respondieron sí</span></div>
+      <div class="stat"><b id="sNo">0</b><span>No asistirán</span></div>
+      <div class="stat"><b id="sPend">0</b><span>Pendientes</span></div>
+      <div class="stat"><b id="sSin">0</b><span>Sin responder</span></div>
+      <div class="stat"><b id="sFotos">0</b><span>Fotos y videos</span></div>
+    </div>
+
+    <h2>Confirmaciones <button class="btn sm" id="csvBtn" type="button">Copiar CSV</button></h2>
+    <div class="scroll"><table><thead><tr><th>Invitación</th><th>Respuesta</th><th>Personas</th><th>Mensaje</th><th>Fecha</th></tr></thead><tbody id="rsvpBody"></tbody></table></div>
+
+    <h2>Enlaces personalizados</h2>
+    <p class="muted">Cada invitación tiene su propio enlace. Cópialo y envíalo por WhatsApp.</p>
+    <div class="links" id="links"></div>
+
+    <h2>Fotos subidas</h2>
+    <div class="grid" id="fotos"></div>
+    <p><button class="btn" id="moreFotos" type="button" hidden>Cargar más</button></p>
+    <p><button class="btn sm" id="logoutBtn" type="button">Salir</button></p>
+  </div>
+</div>
+
+<script src="js/config.js?v=8"></script>
+<script src="js/invitados.js?v=8"></script>
+<script src="js/admin.js?v=8" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /fotos/{archivo} {
+      allow read: if true;
+      // Solo imágenes y videos, máximo 300 MB por archivo. Nadie puede sobrescribir ni borrar desde la web.
+      allow create: if request.resource.size < 300 * 1024 * 1024
+        && (request.resource.contentType.matches('image/.*') || request.resource.contentType.matches('video/.*'));
+      allow update, delete: if request.auth != null && request.auth.token.email in ['diego.vasara@gmail.com'];
+    }
+  }
+}
