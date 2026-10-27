@@ -44,13 +44,19 @@ $('regalosTexto').textContent = B.regalosTexto;
 $('dcEvitar').innerHTML = DC.evitar.map(([n,c]) => `<div class="sw no"><i style="background:${c}"></i>${esc(n)}</div>`).join('');
 $('pinBtn').href = DC.pinterest;
 
-const cuentas = [...B.cuentas.map(c => ({...c, label: `${c.banco} · ${c.tipo}`}))];
-if (B.sinpe) cuentas.push({label:'SINPE Móvil', numero:B.sinpe.numero, titular:B.sinpe.titular});
-$('accts').innerHTML = cuentas.map((c,i) =>
-  `<div class="acct"><span class="bank">${esc(c.label)}</span><span class="num" id="num${i}">${esc(c.numero)}</span><span class="own">${esc(c.titular)}</span><button class="copy" type="button" data-i="${i}">Copiar</button></div>`).join('');
+const cuentas = [];
+(B.novios || []).forEach(n => {
+  if (n.sinpe) cuentas.push({grupo: n, label: 'SINPE Móvil', numero: n.sinpe, titular: n.nombre, sinpe: true});
+  (n.cuentas || []).forEach(c => cuentas.push({grupo: n, label: `${c.banco} · ${c.tipo}`, numero: c.numero, titular: n.nombre}));
+});
+$('accts').innerHTML = (B.novios || []).map(n =>
+  `<div class="acct-group"><h3 class="acct-who"><span>${esc(n.rol)}</span>${esc(n.nombre)}</h3>` +
+  cuentas.map((c,i) => c.grupo !== n ? '' :
+    `<div class="acct${c.sinpe ? ' sinpe' : ''}"><span class="bank">${esc(c.label)}</span><span class="num" id="num${i}">${esc(c.numero)}</span><span class="own">${c.sinpe ? 'A nombre de ' + esc(c.titular) : esc(c.titular)}</span><button class="copy" type="button" data-i="${i}">Copiar</button></div>`).join('') +
+  `</div>`).join('');
 $('accts').addEventListener('click', async e => {
   const b = e.target.closest('.copy'); if (!b) return;
-  const txt = cuentas[b.dataset.i].numero.replace(/\s/g,'');
+  const txt = cuentas[b.dataset.i].numero.replace(/[\s-]/g,'');
   try { await navigator.clipboard.writeText(txt); b.textContent = 'Copiado'; b.classList.add('ok'); }
   catch { const r = document.createRange(); r.selectNodeContents($('num'+b.dataset.i)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selecciona'; }
   setTimeout(() => { b.textContent = 'Copiar'; b.classList.remove('ok'); }, 2200);
@@ -172,7 +178,10 @@ function reanudar(){
     ['touchstart','pointerdown','keydown'].forEach(ev => addEventListener(ev, once, {once:true, passive:true}));
   });
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(reanudar, 150); else paintMusic(); });
+// Al salir de la invitación (otra pestaña, otra app, pantalla bloqueada) la música se pausa; al volver, se retoma.
+function pausarAlSalir(){ if (!bgm.paused) { quiereMusica = true; clearInterval(fadeTimer); bgm.pause(); } paintMusic(); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(reanudar, 150); else pausarAlSalir(); });
+addEventListener('pagehide', pausarAlSalir);
 addEventListener('pageshow', () => setTimeout(reanudar, 150));
 addEventListener('focus', () => setTimeout(reanudar, 150));
 

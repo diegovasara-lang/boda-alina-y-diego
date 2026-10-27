@@ -158,7 +158,10 @@ h2.t{font-family:var(--display);font-size:clamp(36px,10vw,46px);letter-spacing:-
 .palette .names span{flex:1;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--piedra)}
 
 /* ---------- Regalos ---------- */
-.accts{margin:28px auto 0;max-width:400px;text-align:left;border-top:1px solid var(--marfil-2)}
+.accts{margin:28px auto 0;max-width:400px;text-align:left}
+.acct-group{border-top:1px solid var(--marfil-2);margin-top:26px}.acct-group:first-child{margin-top:0}
+.acct-who{font-family:var(--display);font-weight:400;font-size:24px;margin:18px 0 4px;line-height:1.1}.acct-who span{display:block;font-family:var(--display);font-style:italic;font-size:14px;color:#8f7446;margin-bottom:2px}
+.acct.sinpe .num{font-size:25px}
 .acct{padding:18px 0;border-bottom:1px solid var(--marfil-2);display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:center}
 .acct > span{grid-column:1}
 .acct .bank{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--oliva);font-weight:400}

@@ -43,13 +43,15 @@ window.BODA = {
     pinterest: "https://pin.it/6qmHqN4bZ",
     evitar: [["Blanco", "#ffffff"], ["Beige", "#efe6d4"], ["Marfil", "#f6f1e3"]]
   },
-  regalosTexto: "Apreciamos cada muestra de cariño que nos quieran dar. En esta ocasión les invitamos a compartirla en efectivo: en un sobre el día de la boda, o por transferencia a estas cuentas.",
+  regalosTexto: "Su compañía es el mejor regalo que podemos recibir, y no esperamos nada más. Si aun así quieren tener un detalle con nosotros, lo agradecemos de corazón: puede ser un sobre el día de la boda, un SINPE Móvil o una transferencia. Es completamente voluntario.",
 
-  cuentas: [
-    { banco: "Scotiabank", tipo: "IBAN", numero: "CR41 0123 0012 0120 6620 09", titular: "Alina" },
-    { banco: "BAC Credomatic", tipo: "IBAN", numero: "CR23 0102 0000 9731 3702 96", titular: "Diego" }
+  // Obsequios: un bloque por cada novio. SINPE Móvil va primero porque es lo que más usa la gente.
+  novios: [
+    { rol: "La novia", nombre: "Alina", sinpe: "8951-1100",
+      cuentas: [ { banco: "Scotiabank", tipo: "IBAN", numero: "CR41 0123 0012 0120 6620 09" } ] },
+    { rol: "El novio", nombre: "Diego", sinpe: "8994-6802",
+      cuentas: [ { banco: "BAC Credomatic", tipo: "IBAN", numero: "CR23 0102 0000 9731 3702 96" } ] }
   ],
-  sinpe: null,   // opcional: { numero: "0000-0000", titular: "Nombre" }
 
   fechaLimite: "20 de noviembre de 2026",
   whatsappRespaldo: null,   // ← poner "506XXXXXXXX" (con código de país) para ofrecer WhatsApp si la base de datos falla
