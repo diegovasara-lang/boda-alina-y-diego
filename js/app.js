@@ -11,7 +11,9 @@ const clave = qi || (INV[hh] ? hh : '');
 const invitado = INV[clave] || null;
 if (invitado) {
   $('guestTitle').textContent = invitado.titulo;
-  $('guestNames').innerHTML = invitado.personas.map(p => `<li>${esc(p)}</li>`).join('');
+  const repetido = invitado.personas.length === 1 && invitado.personas[0].trim().toLowerCase() === invitado.titulo.trim().toLowerCase();
+  $('guestNames').innerHTML = repetido ? '' : invitado.personas.map(p => `<li>${esc(p)}</li>`).join('');
+  $('guestNames').hidden = repetido;
   $('coverFor').textContent = 'Invitación para';
   $('coverNames').textContent = invitado.titulo;
   document.title = `Boda de Alina & Diego · ${invitado.titulo}`;
@@ -155,7 +157,7 @@ function fadeTo(v, ms, then){
 }
 function paintMusic(){ const on = !bgm.paused; $('musicBtn').classList.toggle('on', on); $('musicBtn').setAttribute('aria-pressed', on); $('musicTxt').textContent = on ? 'Sonando' : 'Música'; }
 async function playMusic(){ try { await bgm.play(); fadeTo(.32, 3500); } catch(e) { /* el navegador bloqueó el autoplay: el botón flotante queda disponible */ } paintMusic(); }
-function stopMusic(){ quiereMusica = false; fadeTo(0, 800, () => { bgm.pause(); paintMusic(); }); paintMusic(); setTimeout(paintMusic, 850); }
+function stopMusic(){ quiereMusica = false; clearInterval(fadeTimer); if (!volumeAjustable) { bgm.pause(); paintMusic(); return; } fadeTo(0, 800, () => { bgm.pause(); paintMusic(); }); paintMusic(); setTimeout(paintMusic, 850); }
 $('musicBtn').addEventListener('click', () => bgm.paused ? playMusic() : stopMusic());
 bgm.addEventListener('play', paintMusic); bgm.addEventListener('pause', paintMusic);
 // Al salir a Maps/Waze o a otra app el sistema pausa el audio; al volver, lo retomamos.

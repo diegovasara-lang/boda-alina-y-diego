@@ -81,15 +81,15 @@ h2.t{font-family:var(--display);font-size:clamp(36px,10vw,46px);letter-spacing:-
 .hero-text{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px}
 .hero-text > *{opacity:0}
 .open .hero-text > *{animation:fadeUp 1.3s ease forwards}
-.open .hero-text > :nth-child(2){animation-delay:1.9s}.open .hero-text > :nth-child(3){animation-delay:2.4s}.open .hero-text > :nth-child(4){animation-delay:2.7s}.open .hero-text > :nth-child(5){animation-delay:3s}.open .hero-text > :nth-child(6){animation-delay:3.2s}
-.hero-mono{width:74px;height:auto;filter:invert(1) brightness(1.6);opacity:.95}
-.hero-wordmark{width:min(76vw,330px);height:auto;margin-top:6px;filter:invert(1) brightness(1.7) drop-shadow(0 2px 14px rgba(0,0,0,.35))}
+.open .hero-mono{animation-delay:1.7s}.open .hero-wordmark{animation-delay:2.2s}.open .hero-sub{animation-delay:2.6s}.open .hero-date{animation-delay:2.9s}.open .hero-place{animation-delay:3.1s}.open .hero-cta{animation-delay:3.4s}
+.hero-mono{width:74px;height:auto;filter:invert(1) brightness(1.6) drop-shadow(0 2px 12px rgba(0,0,0,.35));margin-bottom:2px}
+.hero-wordmark{width:min(70vw,300px);height:auto;margin-top:0;filter:invert(1) brightness(1.7) drop-shadow(0 2px 14px rgba(0,0,0,.35))}
 .hero-sub{font-family:var(--display);font-style:italic;font-size:23px;margin-top:14px;color:var(--marfil);text-shadow:0 1px 14px rgba(0,0,0,.55),0 0 2px rgba(0,0,0,.35);display:flex;align-items:center;gap:14px}
 .hero-sub::before,.hero-sub::after{content:"";width:28px;height:1px;background:var(--laton-2);opacity:.85}
 .hero-date{text-shadow:0 1px 10px rgba(0,0,0,.5)}
 .hero-place{text-shadow:0 1px 10px rgba(0,0,0,.5)}
 .hero-date{font-size:12.5px;letter-spacing:.42em;margin-top:8px;font-variant-numeric:tabular-nums}
-.hero-place{font-family:var(--display);font-size:16px;letter-spacing:.06em;opacity:.85}
+.hero-place{font-family:var(--display);font-size:16px;letter-spacing:.06em;color:rgba(250,247,241,.88)}
 .hero .down{position:relative;z-index:1;margin-top:34px;width:1px;height:46px;background:linear-gradient(var(--laton-2),transparent);opacity:0}
 .open .hero .down{animation:fadeUp 1s ease 3.6s forwards}
 
