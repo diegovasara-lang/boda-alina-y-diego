@@ -190,13 +190,13 @@ const canciones = [];
 (function(){
   const input = $('songInput'), list = $('songList'), picked = $('songPicked');
   let timer = 0, items = [], sel = -1, lastQ = '';
-  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
+  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="" onerror="this.remove()">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
   const close = () => { list.hidden = true; list.innerHTML = ''; items = []; sel = -1; };
   const add = c => { if (canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
   const show = q => {
     const manual = {titulo: q, artista: 'Escrita a mano', arte: null, manual: true};
     const aviso = items.length ? '' : `<li class="manual" style="cursor:default;color:var(--piedra)">No encontramos coincidencias; puedes guardarla tal cual:</li>`;
-    list.innerHTML = aviso + items.map((c,i) => `<li role="option" data-i="${i}"><img src="${esc(c.arte)}" alt=""><div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
+    list.innerHTML = aviso + items.map((c,i) => `<li role="option" data-i="${i}">${c.arte ? `<img src="${esc(c.arte)}" alt="" onerror="this.remove()">` : ''}<div><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div></li>`).join('') + `<li role="option" data-i="m" class="manual">Usar “${esc(q)}” tal cual</li>`;
     items.push(manual); list.hidden = false; sel = -1;
   };
   input.addEventListener('input', () => {
