@@ -25,7 +25,7 @@ window.INVITADOS = {
   "hugo-njg": { titulo: "Hugo Vásquez", personas: ["Hugo Vásquez"] },
   "ricardo-mer": { titulo: "Ricardo Vásquez", personas: ["Ricardo Vásquez"] },
   "marta-4au": { titulo: "Marta Araya", personas: ["Marta Araya"] },
-  "yadira-ur2": { titulo: "Yadira & Gerardo", personas: ["Yadira Araya", "Gerardo Brenes"] },
+  "yadira-ur2": { titulo: "Yadira & Gerardo", personas: ["Yadira Araya", "Gerardo Segura"] },
   "aida-h3r": { titulo: "Aida Araya", personas: ["Aida Araya"] },
   "maria-77d": { titulo: "María Vásquez", personas: ["María Vásquez"] },
   "joseph-dk5": { titulo: "Joseph Vargas", personas: ["Joseph Vargas"] },
