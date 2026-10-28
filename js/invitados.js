@@ -30,7 +30,7 @@ window.INVITADOS = {
   "joseph-dk5": { titulo: "Joseph Vargas", personas: ["Joseph Vargas"] },
   "brandon-df4": { titulo: "Brandon Núñez", personas: ["Brandon Núñez"] },
   "luis-solano-rjk": { titulo: "Luis Solano", personas: ["Luis Solano"] },
-  "guillermo-rah": { titulo: "Guillermo Ramírez", personas: ["Guillermo Ramírez"] },
+  "guillermo-rah": { titulo: "Guillermo Moya", personas: ["Guillermo Moya"] },
   "dinnier-qet": { titulo: "Dinnier Vindas", personas: ["Dinnier Vindas"] },
   "fernando-n6p": { titulo: "Fernando Castillo", personas: ["Fernando Castillo"] },
   "esteban-moreno-9uf": { titulo: "Esteban Moreno", personas: ["Esteban Moreno"] },
