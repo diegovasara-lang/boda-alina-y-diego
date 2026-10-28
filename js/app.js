@@ -213,11 +213,28 @@ const fbReady = initFirebase().then(x => fb = x);
 /* ---------- Canción que no puede faltar (buscador público de Apple Music, sin cuenta) ---------- */
 const canciones = [];
 (function(){
-  const input = $('songInput'), list = $('songList'), picked = $('songPicked');
-  let timer = 0, items = [], sel = -1, lastQ = '';
-  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= 2; input.placeholder = canciones.length >= 2 ? 'Ya elegiste dos canciones' : 'Escribe la canción o el artista'; };
+  const input = $('songInput'), list = $('songList'), picked = $('songPicked'), saveBtn = $('songSave'), note = $('songNote');
+  const MAX = 5, LS_SONGS = 'canciones:' + (clave || 'anon');
+  let guardadas = '[]';
+  const serial = () => JSON.stringify(canciones.map(c => ({titulo: String(c.titulo).slice(0,120), artista: String(c.artista || '').slice(0,120), arte: c.arte || null})));
+  const dirty = () => { const cambio = serial() !== guardadas; saveBtn.hidden = !cambio && !canciones.length; saveBtn.textContent = cambio ? 'Guardar canciones' : 'Canciones guardadas'; saveBtn.disabled = !cambio; };
+  const marcarGuardado = (ts) => { guardadas = serial(); dirty(); const f = new Date(ts || Date.now()).toLocaleDateString('es-CR', {day:'numeric', month:'long'}); note.textContent = canciones.length ? `Tu lista quedó guardada el ${f}. Puedes volver a cambiarla cuando quieras.` : ''; note.hidden = !canciones.length; };
+  function idPropio(){ if (clave) return clave; let id = null; try { id = localStorage.getItem('rsvp:anon-id'); } catch {} if (!id) { id = 'anon-' + Math.random().toString(36).slice(2,10); try { localStorage.setItem('rsvp:anon-id', id); } catch {} } return id; }
+  saveBtn.addEventListener('click', async () => {
+    const id = idPropio();
+    const nombre = invitado ? invitado.titulo : (($('rsvpName') && $('rsvpName').value.trim()) || 'Invitado');
+    const data = {clave: id, nombre, canciones: JSON.parse(serial()), ts: Date.now()};
+    saveBtn.disabled = true; saveBtn.textContent = 'Guardando…';
+    try {
+      await fbReady;
+      if (fb) await fb.fs.setDoc(fb.fs.doc(fb.db, 'canciones', id), {...data, actualizado: fb.fs.serverTimestamp()});
+      try { localStorage.setItem(LS_SONGS, JSON.stringify(data)); } catch {}
+      marcarGuardado(data.ts);
+    } catch (e) { console.error(e); saveBtn.disabled = false; saveBtn.textContent = 'Guardar canciones'; note.textContent = 'No pudimos guardar la lista. Revisa tu conexión e intenta de nuevo.'; note.hidden = false; }
+  });
+  const paint = () => { picked.innerHTML = canciones.map((c,i) => `<li>${c.arte ? `<img src="${esc(c.arte)}" alt="">` : ''}<div class="txt"><b>${esc(c.titulo)}</b><small>${esc(c.artista)}</small></div><button type="button" data-i="${i}" aria-label="Quitar">×</button></li>`).join(''); input.disabled = canciones.length >= MAX; input.placeholder = canciones.length >= MAX ? 'Ya elegiste cinco canciones' : canciones.length ? 'Agrega otra canción' : 'Escribe la canción o el artista'; };
   const close = () => { list.hidden = true; list.innerHTML = ''; items = []; sel = -1; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); };
-  const add = c => { if (!c || canciones.length >= 2) return; canciones.push(c); input.value = ''; close(); paint(); };
+  const add = c => { if (!c || canciones.length >= MAX) return; canciones.push(c); input.value = ''; close(); paint(); dirty(); };
   const pick = li => add(li.dataset.i === 'm' ? items[items.length-1] : items[+li.dataset.i]);
   const show = q => {
     const manual = {titulo: q, artista: 'Escrita a mano', arte: null, manual: true};
@@ -272,8 +289,12 @@ const canciones = [];
     if (lis[sel]) { input.setAttribute('aria-activedescendant', lis[sel].id); lis[sel].scrollIntoView({block:'nearest'}); }
   });
   input.addEventListener('blur', () => setTimeout(close, 250));
-  picked.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; canciones.splice(+b.dataset.i, 1); paint(); });
-  document.addEventListener('rsvp:restore', e => { canciones.splice(0, canciones.length, ...(e.detail || [])); paint(); });
+  picked.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; canciones.splice(+b.dataset.i, 1); paint(); dirty(); });
+  // Recuperar la lista: primero la copia local, luego la de la base de datos
+  const restaurar = d => { if (!d || !Array.isArray(d.canciones)) return; canciones.splice(0, canciones.length, ...d.canciones); paint(); marcarGuardado(d.ts); };
+  try { restaurar(JSON.parse(localStorage.getItem(LS_SONGS) || 'null')); } catch {}
+  fbReady.then(async () => { if (!fb || !clave) return; try { const snap = await fb.fs.getDoc(fb.fs.doc(fb.db, 'canciones', clave)); if (snap.exists()) { const d = snap.data(); try { localStorage.setItem(LS_SONGS, JSON.stringify(d)); } catch {} restaurar(d); } } catch {} });
+  let timer = 0, items = [], sel = -1, lastQ = '';
 })();
 
 /* ---------- RSVP ---------- */
@@ -303,9 +324,6 @@ function showDone(data){
   const f = new Date(data.ts || Date.now()).toLocaleDateString('es-CR', {day:'numeric', month:'long', year:'numeric'});
   $('sentDate').textContent = 'Respuesta enviada el ' + f;
   $('calBox').hidden = data.respuesta !== 'si';
-  if (data.canciones) document.dispatchEvent(new CustomEvent('rsvp:restore', {detail: data.canciones}));
-  const s = (data.canciones || []).map(c => c.titulo + (c.artista && c.artista !== 'Escrita a mano' ? ' · ' + c.artista : '')).join('  ·  ');
-  $('doneSongs').textContent = s ? 'Tu canción: ' + s : ''; $('doneSongs').hidden = !s;
 }
 // Si ya respondió desde otro teléfono, recuperar su respuesta de la base de datos
 fbReady.then(async () => { if (!fb || !clave) return; try { const snap = await fb.fs.getDoc(fb.fs.doc(fb.db, 'rsvp', clave)); if (snap.exists()) { const d = snap.data(); try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch {} showDone(d); } } catch (e) { /* lectura no permitida para invitados: se usa la copia local */ } });
@@ -330,7 +348,7 @@ form.addEventListener('submit', async e => {
   if (!r) { err.textContent = 'Elige una de las tres opciones.'; err.hidden = false; return; }
   const personas = r === 'si' ? (invitado ? [...form.querySelectorAll('input[name=persona]:checked')].map(i => i.value) : [nombre]) : [];
   if (r === 'si' && invitado && invitado.personas.length > 1 && !personas.length) { err.textContent = 'Marca al menos una persona.'; err.hidden = false; return; }
-  const data = { clave: clave || null, nombre, respuesta: r, personas, fechaConfirma: r === 'pendiente' ? ($('rsvpWhen').value || null) : null, mensaje: $('rsvpMsg').value.trim().slice(0,500) || null, canciones: canciones.map(c => ({titulo: String(c.titulo).slice(0,120), artista: String(c.artista).slice(0,120), arte: c.arte || null})), ts: Date.now(), ua: navigator.userAgent.slice(0,120) };
+  const data = { clave: clave || null, nombre, respuesta: r, personas, fechaConfirma: r === 'pendiente' ? ($('rsvpWhen').value || null) : null, mensaje: $('rsvpMsg').value.trim().slice(0,500) || null, ts: Date.now(), ua: navigator.userAgent.slice(0,120) };
 
   const btn = $('sendBtn'); btn.disabled = true; btn.textContent = 'Enviando…';
   try {

@@ -24,6 +24,17 @@ service cloud.firestore {
         && request.resource.data.ts is number;
     }
 
+    // Canciones: cada invitado guarda su lista (hasta 5) bajo su clave; solo los novios listan y borran.
+    match /canciones/{id} {
+      allow get: if true;
+      allow list, delete: if esAdmin();
+      allow create, update: if request.resource.data.keys().hasOnly(['clave','nombre','canciones','ts','actualizado'])
+        && request.resource.data.clave == id
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() > 0 && request.resource.data.nombre.size() <= 120
+        && request.resource.data.canciones is list && request.resource.data.canciones.size() <= 5
+        && request.resource.data.ts is number;
+    }
+
     // Fotos: todos ven la galería; cualquiera registra una subida (solo URLs de nuestro Storage); solo los novios borran.
     match /fotos/{id} {
       allow read: if true;

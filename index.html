@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=14">
+<link rel="stylesheet" href="css/estilo.css?v=15">
 </head>
 <body>
 
@@ -47,7 +47,7 @@
       <img class="hero-mono" src="assets/monograma.png" alt="" aria-hidden="true">
       <img class="hero-wordmark" src="assets/wordmark.png" alt="Alina & Diego">
       <p class="hero-sub">Nos casamos</p>
-      <p class="hero-date">20 · 12 · 2026</p>
+      <p class="hero-date">20 de diciembre, 2026</p>
       <p class="hero-place">Atenas, Costa Rica</p>
       <a class="btn hero-cta" href="#confirmar">Confirmar asistencia</a>
     </div>
@@ -73,7 +73,8 @@
   <nav class="sec tight reveal indice" id="indice" aria-label="Contenido de la invitación">
     <p class="pre">En esta invitación</p>
     <ol>
-      <li><a href="#confirmar"><b>Confirma tu asistencia</b><span>Antes del <em id="idxDeadline"></em> · y la canción que no puede faltar</span></a></li>
+      <li><a href="#confirmar"><b>Confirma tu asistencia</b><span>Antes del <em id="idxDeadline"></em></span></a></li>
+      <li><a href="#canciones"><b>La playlist</b><span>Las canciones que no pueden faltar</span></a></li>
       <li><a href="#lugares"><b>Dónde y cuándo</b><span>Iglesia y hacienda, con Google Maps y Waze</span></a></li>
       <li><a href="#vestimenta"><b>Código de vestimenta</b><span>Formal veraniego · colores reservados</span></a></li>
       <li><a href="#regalos"><b>Obsequios</b><span>SINPE Móvil y cuentas</span></a></li>
@@ -109,15 +110,6 @@
         <input id="rsvpWhen" name="fechaConfirma" type="date">
       </div>
 
-      <div class="field" id="songField">
-        <label for="songInput">¿Qué canción no puede faltar? <span class="opt">(hasta dos)</span></label>
-        <div class="song-box">
-          <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songList" enterkeyhint="search">
-          <ul class="song-list" id="songList" role="listbox" hidden></ul>
-        </div>
-        <ul class="song-picked" id="songPicked"></ul>
-      </div>
-
       <div class="field">
         <label for="rsvpMsg">Mensaje para los novios <span class="opt">(opcional)</span></label>
         <textarea id="rsvpMsg" name="mensaje" rows="2" placeholder="Alergias, restricciones, o solo cariño"></textarea>
@@ -132,7 +124,6 @@
       <img src="assets/monograma.png" alt="" class="done-mono">
       <p class="done-title" id="doneTitle">Gracias</p>
       <p class="lead sm" id="doneText" style="margin-top:10px"></p>
-      <p class="done-songs muted" id="doneSongs" hidden style="font-size:13px;margin-top:8px"></p>
       <p class="sent"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="sentDate">Respuesta enviada</span></p>
       <div class="cal" id="calBox" hidden>
         <a class="btn fill" id="calGoogle" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agregar a Google Calendar</a>
@@ -143,6 +134,21 @@
     </div>
 
     <p class="adults" id="adultsNote" hidden>Aunque amamos a los pequeños, esta celebración es solo para adultos. Gracias por entender.</p>
+  </section>
+
+  <!-- Canciones -->
+  <section class="sec reveal songs" id="canciones">
+    <p class="pre">La playlist</p>
+    <h2 class="t">¿Qué canción no puede faltar?</h2>
+    <p class="lead sm">Queremos armar la fiesta con ustedes. Agrega hasta cinco canciones; puedes volver cuando quieras a cambiarlas o sumar otra.</p>
+    <div class="song-box">
+      <label class="visually-hidden" for="songInput">Buscar canción</label>
+      <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songList" enterkeyhint="search">
+      <ul class="song-list" id="songList" role="listbox" hidden></ul>
+    </div>
+    <ul class="song-picked" id="songPicked"></ul>
+    <div class="btns" style="margin-top:18px"><button class="btn fill wide" id="songSave" type="button" hidden>Guardar canciones</button></div>
+    <p class="form-note" id="songNote" hidden></p>
   </section>
 
   <figure class="photo tall parallax"><img src="img/arbol.jpg" srcset="img/arbol-800.jpg 800w, img/arbol.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego bajo un árbol" loading="lazy"></figure>
@@ -246,8 +252,8 @@
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="musicTxt">Música</span>
 </button>
 
-<script src="js/config.js?v=14"></script>
-<script src="js/invitados.js?v=14"></script>
-<script src="js/app.js?v=14" type="module"></script>
+<script src="js/config.js?v=15"></script>
+<script src="js/invitados.js?v=15"></script>
+<script src="js/app.js?v=15" type="module"></script>
 </body>
 </html>

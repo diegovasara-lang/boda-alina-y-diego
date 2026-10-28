@@ -22,21 +22,31 @@ const base = location.href.replace(/admin\.html.*$/, '');
 $('links').innerHTML = Object.entries(INV).map(([k,g]) => `<code>${esc(base)}?i=${k}</code><button class="btn sm" data-u="${esc(base)}?i=${k}">Copiar</button><span class="muted" style="grid-column:1/-1">${esc(g.titulo)} · ${g.personas.length} persona(s)</span>`).join('');
 $('links').onclick = e => { const b = e.target.closest('button'); if (b) navigator.clipboard.writeText(b.dataset.u).then(() => b.textContent = 'Copiado'); };
 
-let rows = [];
+let rows = [], rsvps = [], songsBy = {};
+function merge(){
+  // Cada fila combina la confirmación con la lista de canciones guardada aparte (colección 'canciones')
+  rows = rsvps.map(r => ({...r, canciones: (songsBy[r.id] && songsBy[r.id].canciones) || r.canciones || []}));
+  const vistos = new Set(rsvps.map(r => r.id));
+  Object.values(songsBy).filter(x => !vistos.has(x.id)).forEach(x => rows.push({id:x.id, clave:x.clave, nombre:x.nombre, respuesta:'sin', personas:[], canciones:x.canciones || [], ts:x.ts}));
+  render();
+}
 function load(){
-  F.onSnapshot(F.query(F.collection(db,'rsvp'), F.orderBy('ts','desc')), snap => {
-    rows = snap.docs.map(d => ({id:d.id, ...d.data()}));
-    const si = rows.filter(r => r.respuesta === 'si');
-    $('sSi').textContent = si.reduce((n,r) => n + (r.personas?.length || 1), 0);
-    $('sGrupos').textContent = si.length;
-    $('sNo').textContent = rows.filter(r => r.respuesta === 'no').length;
-    $('sPend').textContent = rows.filter(r => r.respuesta === 'pendiente').length;
-    const respondieron = new Set(rows.map(r => r.clave).filter(Boolean));
-    $('sSin').textContent = Object.keys(INV).filter(k => !respondieron.has(k)).length;
-    $('rsvpBody').innerHTML = rows.map(r => `<tr><td>${esc(r.nombre)}<br><span class="muted">${esc(r.clave || 'sin enlace')}</span></td><td><span class="tag ${esc(r.respuesta)}">${{si:'Sí',no:'No',pendiente:'Pendiente'}[r.respuesta] || r.respuesta}</span>${r.fechaConfirma ? `<br><span class="muted">confirma el ${esc(r.fechaConfirma)}</span>` : ''}</td><td>${(r.personas||[]).map(esc).join('<br>')}</td><td>${(r.canciones||[]).map(c => esc(c.titulo) + (c.artista && c.artista !== 'Escrita a mano' ? '<br><span class="muted">' + esc(c.artista) + '</span>' : '')).join('<hr style="border:0;border-top:1px solid #e5ded0;margin:6px 0">')}</td><td>${esc(r.mensaje || '')}</td><td class="muted">${new Date(r.ts).toLocaleString('es-CR')}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Aún no hay respuestas.</td></tr>';
-  });
+  F.onSnapshot(F.query(F.collection(db,'rsvp'), F.orderBy('ts','desc')), snap => { rsvps = snap.docs.map(d => ({id:d.id, ...d.data()})); merge(); });
+  F.onSnapshot(F.collection(db,'canciones'), snap => { songsBy = {}; snap.docs.forEach(d => { songsBy[d.id] = {id:d.id, ...d.data()}; }); merge(); });
   loadFotos(false);
   F.getCountFromServer(F.collection(db,'fotos')).then(s => $('sFotos').textContent = s.data().count).catch(()=>{});
+}
+function render(){
+  {
+    const si = rsvps.filter(r => r.respuesta === 'si');
+    $('sSi').textContent = si.reduce((n,r) => n + (r.personas?.length || 1), 0);
+    $('sGrupos').textContent = si.length;
+    $('sNo').textContent = rsvps.filter(r => r.respuesta === 'no').length;
+    $('sPend').textContent = rsvps.filter(r => r.respuesta === 'pendiente').length;
+    const respondieron = new Set(rsvps.map(r => r.clave).filter(Boolean));
+    $('sSin').textContent = Object.keys(INV).filter(k => !respondieron.has(k)).length;
+    $('rsvpBody').innerHTML = rows.map(r => `<tr><td>${esc(r.nombre)}<br><span class="muted">${esc(r.clave || 'sin enlace')}</span></td><td><span class="tag ${esc(r.respuesta)}">${{si:'Sí',no:'No',pendiente:'Pendiente',sin:'Solo canciones'}[r.respuesta] || r.respuesta}</span>${r.fechaConfirma ? `<br><span class="muted">confirma el ${esc(r.fechaConfirma)}</span>` : ''}</td><td>${(r.personas||[]).map(esc).join('<br>')}</td><td>${(r.canciones||[]).map(c => esc(c.titulo) + (c.artista && c.artista !== 'Escrita a mano' ? '<br><span class="muted">' + esc(c.artista) + '</span>' : '')).join('<hr style="border:0;border-top:1px solid #e5ded0;margin:6px 0">')}</td><td>${esc(r.mensaje || '')}</td><td class="muted">${new Date(r.ts).toLocaleString('es-CR')}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Aún no hay respuestas.</td></tr>';
+  }
 }
 $('songsBtn').onclick = () => {
   const lines = rows.flatMap(r => (r.canciones||[]).map(c => `${c.titulo}${c.artista && c.artista !== 'Escrita a mano' ? ' - ' + c.artista : ''}  (${r.nombre})`));

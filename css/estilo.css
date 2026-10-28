@@ -88,7 +88,7 @@ h2.t{font-family:var(--display);font-size:clamp(36px,10vw,46px);letter-spacing:-
 .hero-sub::before,.hero-sub::after{content:"";width:28px;height:1px;background:var(--laton-2);opacity:.85}
 .hero-date{text-shadow:0 1px 10px rgba(0,0,0,.5)}
 .hero-place{text-shadow:0 1px 10px rgba(0,0,0,.5)}
-.hero-date{font-size:12.5px;letter-spacing:.42em;margin-top:8px;font-variant-numeric:tabular-nums}
+.hero-date{font-family:var(--display);font-size:19px;letter-spacing:.08em;margin-top:8px;font-variant-numeric:tabular-nums}
 .hero-place{font-family:var(--display);font-size:16px;letter-spacing:.06em;color:rgba(250,247,241,.88)}
 .hero .down{position:relative;z-index:1;margin-top:34px;width:1px;height:46px;background:linear-gradient(var(--laton-2),transparent);opacity:0}
 .open .hero .down{animation:fadeUp 1s ease 3.6s forwards}
@@ -317,3 +317,9 @@ body.typing .music,body.typing .rsvp-pill{opacity:0;transform:translateY(12px);p
 .song-picked .txt{min-width:0;flex:1}
 .song-picked button{width:44px;height:44px;margin:-6px -8px -6px 0;color:var(--piedra);font-size:20px;line-height:1;flex:none}
 .song-picked button:hover{color:var(--rojo)}
+
+/* Sección de canciones */
+.songs .song-box{max-width:400px;margin:26px auto 0;text-align:left}
+.songs .song-picked{max-width:400px;margin-inline:auto;text-align:left}
+.songs .form-note{margin-top:12px}
+.song-picked li.saved::after{content:"";}
