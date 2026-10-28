@@ -323,3 +323,5 @@ body.typing .music,body.typing .rsvp-pill{opacity:0;transform:translateY(12px);p
 .songs .song-picked{max-width:400px;margin-inline:auto;text-align:left}
 .songs .form-note{margin-top:12px}
 .song-picked li.saved::after{content:"";}
+
+.when-date{font-family:var(--display);font-style:italic;font-size:19px;color:var(--laton-2);margin:-6px 0 8px;letter-spacing:.03em}

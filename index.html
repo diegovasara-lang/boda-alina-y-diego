@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=15">
+<link rel="stylesheet" href="css/estilo.css?v=16">
 </head>
 <body>
 
@@ -74,9 +74,9 @@
     <p class="pre">En esta invitación</p>
     <ol>
       <li><a href="#confirmar"><b>Confirma tu asistencia</b><span>Antes del <em id="idxDeadline"></em></span></a></li>
-      <li><a href="#canciones"><b>La playlist</b><span>Las canciones que no pueden faltar</span></a></li>
-      <li><a href="#lugares"><b>Dónde y cuándo</b><span>Iglesia y hacienda, con Google Maps y Waze</span></a></li>
+      <li><a href="#lugares"><b>Dónde y cuándo</b><span>20 de diciembre · iglesia y hacienda, con Google Maps y Waze</span></a></li>
       <li><a href="#vestimenta"><b>Código de vestimenta</b><span>Formal veraniego · colores reservados</span></a></li>
+      <li><a href="#canciones"><b>Canciones que no pueden faltar</b><span>Para armar la fiesta con ustedes</span></a></li>
       <li><a href="#regalos"><b>Obsequios</b><span>SINPE Móvil y cuentas</span></a></li>
     </ol>
   </nav>
@@ -136,21 +136,6 @@
     <p class="adults" id="adultsNote" hidden>Aunque amamos a los pequeños, esta celebración es solo para adultos. Gracias por entender.</p>
   </section>
 
-  <!-- Canciones -->
-  <section class="sec reveal songs" id="canciones">
-    <p class="pre">La playlist</p>
-    <h2 class="t">¿Qué canción no puede faltar?</h2>
-    <p class="lead sm">Queremos armar la fiesta con ustedes. Agrega hasta cinco canciones; puedes volver cuando quieras a cambiarlas o sumar otra.</p>
-    <div class="song-box">
-      <label class="visually-hidden" for="songInput">Buscar canción</label>
-      <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songList" enterkeyhint="search">
-      <ul class="song-list" id="songList" role="listbox" hidden></ul>
-    </div>
-    <ul class="song-picked" id="songPicked"></ul>
-    <div class="btns" style="margin-top:18px"><button class="btn fill wide" id="songSave" type="button" hidden>Guardar canciones</button></div>
-    <p class="form-note" id="songNote" hidden></p>
-  </section>
-
   <figure class="photo tall parallax"><img src="img/arbol.jpg" srcset="img/arbol-800.jpg 800w, img/arbol.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina y Diego bajo un árbol" loading="lazy"></figure>
 
   <!-- Lugares -->
@@ -158,6 +143,7 @@
     <div class="inner reveal">
       <p class="pre">Dónde y cuándo</p>
       <h2 class="t">Ceremonia<br>&amp; celebración</h2>
+      <p class="when-date">Domingo 20 de diciembre de 2026</p>
 
       <article class="venue">
         <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4v8M20 8h8M10 44V24l14-10 14 10v20M10 44h28M19 44V33a5 5 0 0 1 10 0v11M6 44h36"/></svg>
@@ -221,6 +207,21 @@
     </div>
   </section>
 
+  <!-- Canciones -->
+  <section class="sec reveal songs" id="canciones">
+    <p class="pre">Música</p>
+    <h2 class="t">Las canciones que<br>no pueden faltar</h2>
+    <p class="lead sm">Queremos armar la fiesta con ustedes. Agrega hasta cinco canciones; puedes volver cuando quieras a cambiarlas o sumar otra.</p>
+    <div class="song-box">
+      <label class="visually-hidden" for="songInput">Buscar canción</label>
+      <input id="songInput" type="text" autocomplete="off" placeholder="Escribe la canción o el artista" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songList" enterkeyhint="search">
+      <ul class="song-list" id="songList" role="listbox" hidden></ul>
+    </div>
+    <ul class="song-picked" id="songPicked"></ul>
+    <div class="btns" style="margin-top:18px"><button class="btn fill wide" id="songSave" type="button" hidden>Guardar canciones</button></div>
+    <p class="form-note" id="songNote" hidden></p>
+  </section>
+
   <figure class="photo tall parallax"><img src="img/abrazo.jpg" srcset="img/abrazo-800.jpg 800w, img/abrazo.jpg 1400w" sizes="(max-width: 540px) 100vw, 540px" decoding="async" alt="Alina abraza a Diego en el jardín" loading="lazy"></figure>
 
   <!-- Regalos -->
@@ -252,8 +253,8 @@
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="musicTxt">Música</span>
 </button>
 
-<script src="js/config.js?v=15"></script>
-<script src="js/invitados.js?v=15"></script>
-<script src="js/app.js?v=15" type="module"></script>
+<script src="js/config.js?v=16"></script>
+<script src="js/invitados.js?v=16"></script>
+<script src="js/app.js?v=16" type="module"></script>
 </body>
 </html>
