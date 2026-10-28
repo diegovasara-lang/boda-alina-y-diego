@@ -1,9 +1,10 @@
-/* Lista de invitados. clave → { titulo, personas }.
+/* Lista de invitados. clave → { titulo, personas, conNinos? }.
+   conNinos: true oculta la nota de "solo adultos" en esa invitación.
    El enlace de cada invitación es https://bodaalinaydiego.com/?i=CLAVE */
 window.INVITADOS = {
   "diego-y-alina-wcu": { titulo: "Diego & Alina", personas: ["Diego Vásquez", "Alina Rojas"] },
   "laura-y-randall-9dk": { titulo: "Laura & Randall", personas: ["Laura Muñoz", "Randall Alfaro"] },
-  "estefania-y-kevin-puk": { titulo: "Estefanía & Kevin", personas: ["Estefanía Sancho", "Kevin González"] },
+  "estefania-y-kevin-puk": { titulo: "Estefanía, Kevin & Elina", personas: ["Estefanía Sancho", "Kevin González", "Elina"], conNinos: true },
   "sylvia-y-pedro-hvn": { titulo: "Sylvia & Pedro", personas: ["Sylvia Vásquez", "Pedro Mena"] },
   "denia-y-mario-w7a": { titulo: "Denia & Mario", personas: ["Denia Araya", "Mario Ruiz"] },
   "marvin-y-cristina-wfu": { titulo: "Marvin & Cristina", personas: ["Marvin Araya", "Cristina Arias"] },
@@ -24,7 +25,7 @@ window.INVITADOS = {
   "hugo-njg": { titulo: "Hugo Vásquez", personas: ["Hugo Vásquez"] },
   "ricardo-mer": { titulo: "Ricardo Vásquez", personas: ["Ricardo Vásquez"] },
   "marta-4au": { titulo: "Marta Araya", personas: ["Marta Araya"] },
-  "yadira-ur2": { titulo: "Yadira Araya", personas: ["Yadira Araya"] },
+  "yadira-ur2": { titulo: "Yadira & Gerardo", personas: ["Yadira Araya", "Gerardo Brenes"] },
   "aida-h3r": { titulo: "Aida Araya", personas: ["Aida Araya"] },
   "maria-77d": { titulo: "María Vásquez", personas: ["María Vásquez"] },
   "joseph-dk5": { titulo: "Joseph Vargas", personas: ["Joseph Vargas"] },

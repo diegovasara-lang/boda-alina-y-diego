@@ -14,6 +14,7 @@ if (invitado) {
   const repetido = invitado.personas.length === 1 && invitado.personas[0].trim().toLowerCase() === invitado.titulo.trim().toLowerCase();
   $('guestNames').innerHTML = repetido ? '' : invitado.personas.map(p => `<li>${esc(p)}</li>`).join('');
   $('guestNames').hidden = repetido;
+  $('guestNames').classList.toggle('stack', invitado.personas.length > 2);
   $('coverFor').textContent = 'Invitación para';
   $('coverNames').textContent = invitado.titulo;
   document.title = `Boda de Alina & Diego · ${invitado.titulo}`;
@@ -28,7 +29,7 @@ $('igMaps').href = C.maps; $('igWaze').href = C.waze;
 $('rcName').textContent = R.nombre; $('rcPlace').textContent = R.lugar; $('rcTime').textContent = R.hora; $('rcAddr').textContent = R.direccion;
 $('rcMaps').href = R.maps; $('rcWaze').href = R.waze;
 $('deadline').textContent = B.fechaLimite; $('idxDeadline').textContent = B.fechaLimite;
-$('adultsNote').hidden = !B.soloAdultos;
+$('adultsNote').hidden = !B.soloAdultos || !!(invitado && invitado.conNinos);
 
 if (B.mostrarPrograma) {
   $('programa').hidden = false;
