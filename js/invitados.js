@@ -8,7 +8,7 @@ window.INVITADOS = {
   "sylvia-y-pedro-hvn": { titulo: "Sylvia & Pedro", personas: ["Sylvia Vásquez", "Pedro Mena"] },
   "denia-y-mario-w7a": { titulo: "Denia & Mario", personas: ["Denia Araya", "Mario Ruiz"] },
   "marvin-y-cristina-wfu": { titulo: "Marvin & Cristina", personas: ["Marvin Araya", "Cristina Arias"] },
-  "clara-y-uriel-a2k": { titulo: "Clara & Uriel", personas: ["Clara Araya", "Uriel Céspedes"] },
+  "clary-y-uriel-a2k": { titulo: "Clary & Uriel", personas: ["Clary Araya", "Uriel Céspedes"] },
   "monica-y-francois-hf9": { titulo: "Mónica & François", personas: ["Mónica Brenes", "François Baudrit"] },
   "daniel-y-karla-2su": { titulo: "Daniel & Karla", personas: ["Daniel Rojas", "Karla González"] },
   "esteban-y-karen-4jh": { titulo: "Esteban & Karen", personas: ["Esteban Gómez", "Karen Morera"] },
