@@ -4,7 +4,7 @@ service cloud.firestore {
 
     function esAdmin() {
       return request.auth != null
-        && request.auth.token.email in ['diego.vasara@gmail.com'];   // ← agregar el correo de Alina si quiere entrar al panel
+        && request.auth.token.email in ['diego.vasara@gmail.com', 'alina.rojasm97@gmail.com'];   // ← correos con acceso al panel
     }
     function textoOpc(v, n) { return v == null || (v is string && v.size() <= n); }
 
@@ -17,7 +17,7 @@ service cloud.firestore {
         && request.resource.data.respuesta in ['si', 'no', 'pendiente']
         && request.resource.data.nombre is string && request.resource.data.nombre.size() > 0 && request.resource.data.nombre.size() <= 120
         && request.resource.data.personas is list && request.resource.data.personas.size() <= 10
-        && request.resource.data.canciones is list && request.resource.data.canciones.size() <= 2
+        && (!('canciones' in request.resource.data) || (request.resource.data.canciones is list && request.resource.data.canciones.size() <= 5))
         && textoOpc(request.resource.data.mensaje, 500)
         && textoOpc(request.resource.data.fechaConfirma, 10)
         && textoOpc(request.resource.data.ua, 120)

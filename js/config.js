@@ -69,5 +69,5 @@ window.BODA = {
     appId: "1:545729201144:web:83fd00481f767978f8cc0d"
   },
   // Correos que pueden entrar a admin.html y ver confirmaciones
-  admins: ["diego.vasara@gmail.com"]
+  admins: ["diego.vasara@gmail.com", "alina.rojasm97@gmail.com"]
 };

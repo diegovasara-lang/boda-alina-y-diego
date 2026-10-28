@@ -6,7 +6,7 @@ service firebase.storage {
       // Solo imágenes y videos, máximo 300 MB por archivo. Nadie puede sobrescribir ni borrar desde la web.
       allow create: if request.resource.size < 300 * 1024 * 1024
         && (request.resource.contentType.matches('image/.*') || request.resource.contentType.matches('video/.*'));
-      allow update, delete: if request.auth != null && request.auth.token.email in ['diego.vasara@gmail.com'];
+      allow update, delete: if request.auth != null && request.auth.token.email in ['diego.vasara@gmail.com', 'alina.rojasm97@gmail.com'];
     }
   }
 }
