@@ -1,11 +1,42 @@
-/* =====================================================================
-   LISTA DE INVITADOS
-   La clave es lo que va en el enlace:  https://TU-DOMINIO/?i=clave
-   personas: nombres que cubre la invitación (se muestran en la página).
-   - Una persona  → al confirmar no se pide nada más.
-   - Varias       → al confirmar aparece una casilla por persona para marcar quiénes van.
-   ===================================================================== */
+/* Lista de invitados. clave → { titulo, personas }.
+   El enlace de cada invitación es https://bodaalinaydiego.com/?i=CLAVE */
 window.INVITADOS = {
-  "ricardo":        { titulo: "Ricardo Vasquez Araya",      personas: ["Ricardo Vasquez Araya"] },
-  "xinia-y-silvia": { titulo: "Xinia & Silvia",             personas: ["Xinia Araya Alpizar", "Silvia Vasquez Araya"] }
+  "diego-y-alina-wcu": { titulo: "Diego & Alina", personas: ["Diego Vásquez", "Alina Rojas"] },
+  "laura-y-randall-9dk": { titulo: "Laura & Randall", personas: ["Laura Muñoz", "Randall Alfaro"] },
+  "estefania-y-kevin-puk": { titulo: "Estefanía & Kevin", personas: ["Estefanía Sancho", "Kevin González"] },
+  "sylvia-y-pedro-hvn": { titulo: "Sylvia & Pedro", personas: ["Sylvia Vásquez", "Pedro Mena"] },
+  "denia-y-mario-w7a": { titulo: "Denia & Mario", personas: ["Denia Araya", "Mario"] },
+  "marvin-y-cristina-wfu": { titulo: "Marvin & Cristina", personas: ["Marvin Araya", "Cristina"] },
+  "clara-y-uriel-a2k": { titulo: "Clara & Uriel", personas: ["Clara Araya", "Uriel"] },
+  "monica-y-francois-hf9": { titulo: "Mónica & François", personas: ["Monica Brenes", "Francois Baudrit"] },
+  "daniel-y-karla-2su": { titulo: "Daniel & Karla", personas: ["Daniel Rojas", "Karla González"] },
+  "esteban-y-karen-4jh": { titulo: "Esteban & Karen", personas: ["Esteban Gómez", "Karen Morera"] },
+  "luis-andres-y-fiorella-fsc": { titulo: "Luis Andrés & Fiorella", personas: ["Luis Andres Sánchez", "Fiorella Morera"] },
+  "andres-y-andreina-hd2": { titulo: "Andrés & Andreina", personas: ["Andres Morera", "Andreina Cordero"] },
+  "jason-y-fabiana-9u7": { titulo: "Jason & Fabiana", personas: ["Jason Cano", "Fabiana Conejo"] },
+  "luis-andres-y-nathalie-hh8": { titulo: "Luis Andrés & Nathalie", personas: ["Luis Andrés Jiménez", "Nathalie Vidal"] },
+  "roberto-y-jordan-4ea": { titulo: "Roberto & Jordan", personas: ["Roberto Paniagua", "Jordan Mena"] },
+  "yesenia-bjs": { titulo: "Yesenia Muñoz", personas: ["Yesenia Muñoz"] },
+  "franklin-cgb": { titulo: "Franklin Rojas", personas: ["Franklin Rojas"] },
+  "yeselyn-y8z": { titulo: "Yeselyn Rojas", personas: ["Yeselyn Rojas"] },
+  "frander-e7j": { titulo: "Frander Rojas", personas: ["Frander Rojas"] },
+  "xinia-3b7": { titulo: "Xinia Araya", personas: ["Xinia Araya"] },
+  "hugo-njg": { titulo: "Hugo Vásquez", personas: ["Hugo Vásquez"] },
+  "ricardo-mer": { titulo: "Ricardo Vásquez", personas: ["Ricardo Vásquez"] },
+  "marta-4au": { titulo: "Marta Araya", personas: ["Marta Araya"] },
+  "yadira-ur2": { titulo: "Yadira Araya", personas: ["Yadira Araya"] },
+  "aida-h3r": { titulo: "Aida Araya", personas: ["Aida Araya"] },
+  "maria-77d": { titulo: "María Vásquez", personas: ["María Vásquez"] },
+  "joseph-dk5": { titulo: "Joseph Vargas", personas: ["Joseph Vargas"] },
+  "brandon-df4": { titulo: "Brandon Núñez", personas: ["Brandon Núñez"] },
+  "luis-solano-rjk": { titulo: "Luis Solano", personas: ["Luis Solano"] },
+  "guillermo-rah": { titulo: "Guillermo Ramírez", personas: ["Guillermo Ramírez"] },
+  "dinnier-qet": { titulo: "Dinnier Vindas", personas: ["Dinnier Vindas"] },
+  "fernando-n6p": { titulo: "Fernando Castillo", personas: ["Fernando Castillo"] },
+  "esteban-moreno-9uf": { titulo: "Esteban Moreno", personas: ["Esteban Moreno"] },
+  "johanna-ndu": { titulo: "Johanna Rojas", personas: ["Johanna Rojas"] },
+  "david-7fn": { titulo: "David Cano", personas: ["David Cano"] },
+  "gabriela-veb": { titulo: "Gabriela López", personas: ["Gabriela López"] },
+  "michelle-26f": { titulo: "Michelle Morales", personas: ["Michelle Morales"] },
+  "gerson-hg2": { titulo: "Gerson Fernández", personas: ["Gerson Fernández"] }
 };
