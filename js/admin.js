@@ -1,6 +1,10 @@
 const B = window.BODA, INV = window.INVITADOS;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Pestañas: independientes de Firebase
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return;
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+  ['pResp','pFotos','pLinks'].forEach(id => $(id).hidden = id !== b.dataset.t); });
 if (!B.firebase.apiKey) { $('msg').textContent = 'Falta la configuración de Firebase en js/config.js.'; }
 const v = '10.14.1';
 const [{initializeApp}, A, F, S] = await Promise.all([
@@ -19,7 +23,9 @@ A.onAuthStateChanged(auth, u => {
 });
 
 const base = location.href.replace(/admin\.html.*$/, '');
-$('links').innerHTML = Object.entries(INV).map(([k,g]) => `<code>${esc(base)}?i=${k}</code><button class="btn sm" data-u="${esc(base)}?i=${k}">Copiar</button><span class="muted" style="grid-column:1/-1">${esc(g.titulo)} · ${g.personas.length} persona(s)</span>`).join('');
+function paintLinks(){ const est = {}; rsvps.forEach(r => { if (r.clave) est[r.clave] = r.respuesta; });
+  const T = {si:'Confirmó', no:'No asistirá', pendiente:'Pendiente'};
+  $('links').innerHTML = Object.entries(INV).map(([k,g]) => `<code>${esc(base)}?i=${k}</code><button class="btn sm" data-u="${esc(base)}?i=${k}">Copiar</button><span class="muted" style="grid-column:1/-1">${esc(g.titulo)} · ${g.personas.length} persona(s) · <span class="estado ${esc(est[k]||'')}">${T[est[k]] || 'Sin responder'}</span></span>`).join(''); }
 $('links').onclick = e => { const b = e.target.closest('button'); if (b) navigator.clipboard.writeText(b.dataset.u).then(() => b.textContent = 'Copiado'); };
 
 let rows = [], rsvps = [], songsBy = {};
@@ -37,6 +43,7 @@ function load(){
   F.getCountFromServer(F.collection(db,'fotos')).then(s => $('sFotos').textContent = s.data().count).catch(()=>{});
 }
 function render(){
+  paintLinks();
   {
     const si = rsvps.filter(r => r.respuesta === 'si');
     $('sSi').textContent = si.reduce((n,r) => n + (r.personas?.length || 1), 0);

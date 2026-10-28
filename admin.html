@@ -39,6 +39,12 @@ th{font-weight:400;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
 .links{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13px;align-items:center}
 .links code{font-size:12px;word-break:break-all}
 #msg{margin-top:12px;color:var(--rojo)}
+.tabs{display:flex;gap:6px;margin:22px 0 4px;border-bottom:1px solid var(--marfil-2);flex-wrap:wrap}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;font:400 12px Jost;letter-spacing:.18em;text-transform:uppercase;color:var(--piedra);cursor:pointer;margin-bottom:-1px}
+.tabs button[aria-selected=true]{color:var(--tinta);border-bottom-color:var(--oliva)}
+.tabs button:focus-visible{outline:2px solid var(--oliva);outline-offset:2px}
+.estado{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--piedra)}
+.estado.si{color:var(--oliva)}.estado.no{color:var(--rojo)}
 </style>
 </head>
 <body>
@@ -60,22 +66,31 @@ th{font-weight:400;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
       <div class="stat"><b id="sFotos">0</b><span>Fotos y videos</span></div>
     </div>
 
-    <h2>Confirmaciones <button class="btn sm" id="csvBtn" type="button">Copiar CSV</button> <button class="btn sm" id="songsBtn" type="button">Copiar canciones</button></h2>
-    <div class="scroll"><table><thead><tr><th>Invitación</th><th>Respuesta</th><th>Personas</th><th>Canción</th><th>Mensaje</th><th>Fecha</th></tr></thead><tbody id="rsvpBody"></tbody></table></div>
-
-    <h2>Enlaces personalizados</h2>
-    <p class="muted">Cada invitación tiene su propio enlace. Cópialo y envíalo por WhatsApp.</p>
-    <div class="links" id="links"></div>
-
-    <h2>Fotos subidas</h2>
-    <div class="grid" id="fotos"></div>
-    <p><button class="btn" id="moreFotos" type="button" hidden>Cargar más</button></p>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tabResp" data-t="pResp" aria-selected="true">Respuestas</button>
+      <button type="button" role="tab" id="tabFotos" data-t="pFotos" aria-selected="false">Fotos</button>
+      <button type="button" role="tab" id="tabLinks" data-t="pLinks" aria-selected="false">Enlaces</button>
+    </div>
+    <section id="pResp" role="tabpanel">
+      <h2>Confirmaciones <button class="btn sm" id="csvBtn" type="button">Copiar CSV</button> <button class="btn sm" id="songsBtn" type="button">Copiar canciones</button></h2>
+      <div class="scroll"><table><thead><tr><th>Invitación</th><th>Respuesta</th><th>Personas</th><th>Canción</th><th>Mensaje</th><th>Fecha</th></tr></thead><tbody id="rsvpBody"></tbody></table></div>
+    </section>
+    <section id="pFotos" role="tabpanel" hidden>
+      <h2>Fotos subidas</h2>
+      <div class="grid" id="fotos"></div>
+      <p><button class="btn" id="moreFotos" type="button" hidden>Cargar más</button></p>
+    </section>
+    <section id="pLinks" role="tabpanel" hidden>
+      <h2>Enlaces personalizados</h2>
+      <p class="muted">Cada invitación tiene su propio enlace, con el estado de su respuesta.</p>
+      <div class="links" id="links"></div>
+    </section>
     <p><button class="btn sm" id="logoutBtn" type="button">Salir</button></p>
   </div>
 </div>
 
-<script src="js/config.js?v=24"></script>
-<script src="js/invitados.js?v=24"></script>
-<script src="js/admin.js?v=24" type="module"></script>
+<script src="js/config.js?v=25"></script>
+<script src="js/invitados.js?v=25"></script>
+<script src="js/admin.js?v=25" type="module"></script>
 </body>
 </html>
