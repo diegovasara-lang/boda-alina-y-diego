@@ -3,13 +3,13 @@
    ===================================================================== */
 window.BODA = {
   nombres: "Alina & Diego",
-  fechaISO: "2026-12-20T15:00:00-06:00",     // inicio de la ceremonia (hora de Costa Rica)
+  fechaISO: "2026-12-20T14:30:00-06:00",     // inicio de la ceremonia (hora de Costa Rica)
   finISO:   "2026-12-21T01:00:00-06:00",     // fin estimado de la celebración (para el calendario)
 
   ceremonia: {
     nombre: "Parroquia San Rafael Arcángel",
     lugar: "Atenas, Alajuela",
-    hora: "3:00 p. m.",
+    hora: "2:30 p. m.",
     direccion: "Avenida Central Abel Rodríguez Vargas, frente al parque central de Atenas",
     maps: "https://www.google.com/maps/search/?api=1&query=9.9784079,-84.3798189&query_place_id=ChIJk_LK8RlRoI8RRzGuUcB37E4",
     waze: "https://waze.com/ul?ll=9.9784079,-84.3798189&navigate=yes&zoom=17"
@@ -17,7 +17,7 @@ window.BODA = {
   celebracion: {
     nombre: "Hacienda Vargas Ú",
     lugar: "Atenas, Alajuela",
-    hora: "5:00 p. m.",
+    hora: "4:30 p. m.",
     direccion: "Autopista José María Castro Madriz (Ruta 27), Atenas",
     maps: "https://www.google.com/maps/search/?api=1&query=9.9671583,-84.3570212&query_place_id=ChIJsZxtjjVRoI8Ry4dvKowZ19E",
     waze: "https://waze.com/ul?ll=9.9671583,-84.3570212&navigate=yes&zoom=17"
@@ -26,8 +26,8 @@ window.BODA = {
   // Programa del día: cuando esté definido, poner mostrarPrograma: true
   mostrarPrograma: false,
   programa: [
-    ["3:00 pm", "Ceremonia religiosa", "Parroquia San Rafael Arcángel"],
-    ["5:00 pm", "Recepción de invitados", "Hacienda Vargas Ú"],
+    ["2:30 pm", "Ceremonia religiosa", "Parroquia San Rafael Arcángel"],
+    ["4:30 pm", "Recepción de invitados", "Hacienda Vargas Ú"],
     ["6:30 pm", "Ingreso al salón y brindis", ""],
     ["7:30 pm", "Cena", ""],
     ["9:00 pm", "Set bailable", ""],

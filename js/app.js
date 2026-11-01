@@ -78,7 +78,7 @@ const EVENTO = {
   u.searchParams.set('details', EVENTO.desc); u.searchParams.set('location', EVENTO.lugar);
   $('calGoogle').href = u.toString();
   const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Alina y Diego//Boda//ES','CALSCALE:GREGORIAN','BEGIN:VEVENT',
-    'UID:boda-alina-diego-2026@invitacion', 'DTSTAMP:'+f(Date.now()), 'DTSTART:'+f(B.fechaISO), 'DTEND:'+f(B.finISO),
+    'UID:boda-alina-diego-2026@invitacion', 'SEQUENCE:1', 'DTSTAMP:'+f(Date.now()), 'DTSTART:'+f(B.fechaISO), 'DTEND:'+f(B.finISO),
     'SUMMARY:'+icsTxt(EVENTO.titulo), 'DESCRIPTION:'+icsTxt(EVENTO.desc), 'LOCATION:'+icsTxt(EVENTO.lugar),
     'GEO:9.9784079;-84.3798189', 'URL:'+C.maps, 'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:Mañana es la boda de Alina y Diego','END:VALARM',
     'END:VEVENT','END:VCALENDAR'].join('\r\n');
