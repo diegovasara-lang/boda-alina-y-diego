@@ -39,5 +39,6 @@ window.INVITADOS = {
   "david-7fn": { titulo: "David Cano", personas: ["David Cano"] },
   "gabriela-veb": { titulo: "Gabriela López", personas: ["Gabriela López"] },
   "michelle-26f": { titulo: "Michelle Morales", personas: ["Michelle Morales"] },
-  "gerson-hg2": { titulo: "Gerson Fernández", personas: ["Gerson Fernández"] }
+  "gerson-hg2": { titulo: "Gerson Fernández", personas: ["Gerson Fernández"] },
+  "maria-jose-suv": { titulo: "María José Obando", personas: ["María José Obando"] }
 };
