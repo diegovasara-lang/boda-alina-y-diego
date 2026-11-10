@@ -18,7 +18,7 @@ $('loginBtn').onclick = () => A.signInWithPopup(auth, new A.GoogleAuthProvider()
 $('logoutBtn').onclick = () => A.signOut(auth);
 A.onAuthStateChanged(auth, u => {
   if (!u) { $('login').hidden = false; $('panel').hidden = true; return; }
-  if (!B.admins.includes(u.email)) { $('msg').textContent = `${u.email} no está en la lista de administradores.`; A.signOut(auth); return; }
+  if (!B.admins.map(e => e.toLowerCase()).includes(String(u.email).toLowerCase())) { $('msg').textContent = `${u.email} no está en la lista de administradores.`; A.signOut(auth); return; }
   $('login').hidden = true; $('panel').hidden = false; $('who').textContent = 'Sesión: ' + u.email; load();
 });
 

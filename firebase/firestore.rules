@@ -4,7 +4,7 @@ service cloud.firestore {
 
     function esAdmin() {
       return request.auth != null
-        && request.auth.token.email in ['diego.vasara@gmail.com', 'alina.rojasm97@gmail.com'];   // ← correos con acceso al panel
+        && request.auth.token.email in ['diego.vasara@gmail.com', 'alina.rojasm97@gmail.com', 'mobandoproducciones@gmail.com'];   // ← correos con acceso al panel
     }
     function textoOpc(v, n) { return v == null || (v is string && v.size() <= n); }
 
